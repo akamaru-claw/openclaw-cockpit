@@ -119,7 +119,16 @@ async function getServices() {
   return results;
 }
 
+let cachedWebsites = [];
+let lastWebsiteCheck = 0;
+const WEBSITE_CHECK_INTERVAL = 10 * 60 * 1000;
+
 async function getWebsites() {
+  const now = Date.now();
+  if (now - lastWebsiteCheck < WEBSITE_CHECK_INTERVAL && cachedWebsites.length > 0) {
+    return cachedWebsites.map(s => ({ ...s, cached: true }));
+  }
+
   const sites = [
     { name: 'einhornkönig.de', url: 'https://einhornkönig.de' },
     { name: 'krankenbuch.de', url: 'https://krankenbuch.de' },
@@ -130,19 +139,25 @@ async function getWebsites() {
 
   const results = [];
   for (const site of sites) {
-    const start = Date.now();
     try {
-      const out = await run(`curl -sL -o /dev/null -w "%{http_code}|%{time_total}" --max-time 12 "${site.url}"`);
+      const out = await run(`curl -sL -o /dev/null -w "%{http_code}|%{time_total}" --max-time 15 "${site.url}"`);
       const [code, time] = out.split('|');
       const ms = Math.round(parseFloat(time) * 1000);
       const status = (code === '200' || code === '301' || code === '302' || code === '401' || code === '403') ? 'up' : 'down';
-      results.push({ ...site, status, code, ms });
+      results.push({ ...site, status, code, ms, cached: false });
     } catch (e) {
-      results.push({ ...site, status: 'down', code: 'ERR', ms: 0 });
+      results.push({ ...site, status: 'down', code: 'ERR', ms: 0, cached: false });
     }
   }
+
+  cachedWebsites = results;
+  lastWebsiteCheck = now;
   return results;
 }
+
+// initial website check on startup, then every 10 minutes
+getWebsites().catch(console.error);
+setInterval(() => getWebsites().catch(console.error), WEBSITE_CHECK_INTERVAL);
 
 async function getOpenClawInfo() {
   const model = await run("ps aux | grep -oP 'openclaw.*--model\s+\K[^ ]+' | head -1");
