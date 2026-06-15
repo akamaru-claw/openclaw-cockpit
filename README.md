@@ -1,95 +1,77 @@
 # OpenClaw Cockpit
 
-A local, cyberpunk-themed dashboard for the OpenClaw personal assistant runtime. Built for a MacBook (Linux) host and designed to run fullscreen in Chromium at `http://localhost:31337`.
+A local, cyberpunk-themed dashboard for the OpenClaw personal assistant runtime.
+Designed to run fullscreen in Chromium at `http://localhost:31337` on a Linux host.
 
-**Repository:** https://github.com/akamaru-claw/openclaw-cockpit  
-**Branch:** `master`
+**Repository:** https://github.com/akamaru-claw/openclaw-cockpit
 
 ---
 
 ## What it does
 
-The Cockpit visualizes the current state of the OpenClaw assistant and the host machine on a single screen. It uses a Node.js backend to stream live data via Server-Sent Events (SSE) to a static frontend.
+The Cockpit visualizes the current state of the OpenClaw assistant and the host
+machine on a single screen. A Node.js backend streams live data via
+Server-Sent Events (SSE) to a static frontend.
 
 Features:
 
-- **Animated SVG avatar** with 8 activity states: `sleeping`, `idle`, `reading`, `thinking`, `working`, `cron`, `done`, `error`
-- **Live system metrics** (CPU, RAM, disk, uptime, load, temperature)
-- **Real-life metrics** for Paderborn: current weather, humidity, wind and moon phase
+- **Animated SVG avatar** with 8 activity states: `sleeping`, `idle`, `reading`,
+  `thinking`, `working`, `cron`, `done`, `error`
+- **System metrics** (CPU, RAM, disk, uptime, load, temperature)
+- **Real-life metrics** (current weather, humidity, wind, moon phase)
 - **Active services** status for local daemons
-- **Website status** monitor for 5 domains, checked every 10 minutes
-- **Live Bitcoin data**: price in USD, latest block height, Moscow Time (sats per USD/EUR)
+- **Website status** monitor for configurable domains, checked every 10 minutes
+- **Live Bitcoin data**: price in USD, latest block height, Moscow Time
+  (sats per USD/EUR)
 - **Live conversation** panel synced from the current chat
-- **Live log stream** with top processes, memory hogs, network connections and recent journal entries
+- **Live log stream** with top processes, memory hogs, network connections and
+  recent journal entries
 - **OpenClaw node info**: model, session, runtime status
 
 ---
 
 ## Requirements
 
-- Linux host (tested on Ubuntu 24.04 on a MacBook)
+- Linux host with a graphical session (tested on Ubuntu 24.04)
 - Node.js 18+
 - `npm`
-- `curl`, `jq`, `awk`, `ss`, `ps`, `df`, `free`, `uptime`, `iostat`
-- Optional: `systemd --user` for the service
+- Standard CLI tools: `curl`, `awk`, `ss`, `ps`, `df`, `free`, `uptime`,
+  `iostat`, `journalctl`
+- Optional: `systemd --user` for auto-start
+- Optional: `chromium` or `google-chrome` for the kiosk view
 
 ---
 
-## Installation
+## Quick start
 
 ```bash
-# Clone the repository
 git clone https://github.com/akamaru-claw/openclaw-cockpit.git
 cd openclaw-cockpit
-
-# Install dependencies
 npm install
-
-# Start manually for testing
+cp config.example.json config.json
+# edit config.json for your setup
 node server.js
 ```
 
-The server listens on **127.0.0.1:31337** only. Open `http://localhost:31337` in a browser.
+Open `http://localhost:31337` in your browser.
+
+For a full step-by-step setup see [`docs/SETUP.md`](docs/SETUP.md).
 
 ---
 
-## Systemd service (auto-start at login)
+## Documentation
 
-A user-level systemd unit keeps the server running in the background.
-
-```bash
-# Copy the unit file
-mkdir -p ~/.config/systemd/user
-cp ~/.openclaw/workspace/openclaw-cockpit/cockpit-server.service ~/.config/systemd/user/
-
-# Reload and enable
-systemctl --user daemon-reload
-systemctl --user enable cockpit-server.service
-systemctl --user start cockpit-server.service
-
-# Check status
-systemctl --user status cockpit-server.service
-```
-
-The unit is intentionally bound to the user session. It starts at login and stops at logout. No auto-restart on crash per user preference.
+| Document | Purpose |
+|----------|---------|
+| [`docs/SETUP.md`](docs/SETUP.md) | Full installation, systemd service, desktop shortcut |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | How the backend, SSE, frontend and scripts interact |
+| [`docs/CONFIG.md`](docs/CONFIG.md) | Configure domains, weather location and services |
+| [`docs/API.md`](docs/API.md) | REST / SSE endpoints and helper scripts |
+| [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) | Common problems and fixes |
 
 ---
 
-## Desktop shortcut and autostart
-
-```bash
-# Desktop shortcut
-/home/jordy/Schreibtisch/OpenClaw-Cockpit.desktop
-
-# Autostart entry
-~/.config/autostart/openclaw-cockpit.desktop
-```
-
-Both open Chromium in `--start-fullscreen` pointing to `http://localhost:31337`. Press `F11` to toggle fullscreen and `Alt+F4` to close.
-
----
-
-## Frontend layout
+## Screenshot / layout
 
 ```
 ┌─────────────────┬─────────────────┬─────────────────┐
@@ -102,107 +84,22 @@ Both open Chromium in `--start-fullscreen` pointing to `http://localhost:31337`.
 └─────────────────────────────────────┴─────────────────┘
 ```
 
-The layout is a fixed 3×3 CSS grid with no scrolling required on a standard MacBook display.
-
----
-
-## Backend API
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/` | Serve the frontend |
-| GET | `/stream` | SSE stream with live ticks |
-| GET | `/state` | Current avatar state |
-| GET | `/set-state?state=<STATE>` | Set avatar state |
-| GET | `/chat` | Get persisted chat history |
-| POST | `/chat` | Push a chat message (`{ text, sender }`) |
-
-State values allowed: `sleeping`, `idle`, `reading`, `thinking`, `working`, `cron`, `done`, `error`.
-
----
-
-## Helper scripts
-
-| Script | Purpose |
-|--------|---------|
-| `state-controller.py <STATE>` | Explicitly set the avatar state |
-| `chat-send.py <TEXT> <sender>` | Push a chat message to the dashboard |
-| `state-setter.sh` | Simple `curl` wrapper for `/set-state` |
-
-These scripts are used by the assistant to keep the Cockpit in sync with real interactions.
-
----
-
-## Data sources
-
-- **Bitcoin price / EUR rate**: Coinbase public API (updated every 60s)
-- **Bitcoin block height**: mempool.space public API (updated every 60s)
-- **Weather / moon phase**: Open-Meteo public API, local moon-phase math (updated every 5min)
-- **Website status**: Direct HTTPS checks with `curl` (updated every 10min)
-- **System data**: Local `/proc`, `ss`, `journalctl`, `iostat`, `ps` polled every SSE tick
+The layout is a fixed CSS grid tuned for a 16:10 laptop display. No scrolling
+is required on a standard MacBook-sized screen.
 
 ---
 
 ## Security / privacy
 
-The Cockpit is intentionally **local-only**:
+The Cockpit is intended to be **local-only**:
 
-- Server binds to `127.0.0.1:31337`
-- No public nginx proxy or Cloudflare tunnel route
-- No Basic Auth required locally
+- Server binds to `127.0.0.1:31337` by default
+- No public reverse proxy required
 - No external secrets in the repository
-
-Sensitive tokens (`.env.*`) are excluded via `.gitignore`.
-
----
-
-## Development workflow
-
-```bash
-cd openclaw-cockpit
-git pull origin master
-# make changes
-npm test        # if tests exist
-node server.js  # manual test
-git add -A
-git commit -m "vX.Y.Z: short description"
-git push origin master
-```
-
-Always bump the cache-busting query strings (`style.css?v=X.Y.Z`, `app.js?v=X.Y.Z`) and the footer version when changing frontend assets.
-
----
-
-## Version history (recent)
-
-| Version | Highlights |
-|---------|------------|
-| v0.2.9  | Website status checks reduced to every 10 minutes |
-| v0.2.8  | Split metrics into System + Real Life (weather, moon phase) |
-| v0.2.7  | Website status monitor for 5 domains |
-| v0.2.6  | Bitcoin price, block height, Moscow Time in top bar |
-| v0.2.5  | Compact layout without scrolling on MacBook display |
-| v0.2.4  | Large clock in top bar |
-| v0.2.3  | Local-only deployment, full system log stream |
-| v0.2.2  | Split bottom row into chat + system log panels |
-| v0.2.1  | Fixed duplicate `chatStream` JS bug, cache busting |
-| v0.2.0  | Live conversation panel, chat history via SSE |
-| v0.1.x  | First dashboard versions with metrics, services and log stream |
-
----
-
-## Troubleshooting
-
-**Blank dashboard / no updates**: Hard-reload with `Ctrl+F5`. Check browser console for JS errors. Verify `cockpit-server.service` is running: `systemctl --user status cockpit-server.service`.
-
-**Avatar does not change**: Use `python3 state-controller.py <STATE>`. Check `/state` endpoint returns the expected value.
-
-**Chat not updating**: Messages must be sent via `chat-send.py` or `POST /chat`. The assistant must explicitly call it.
-
-**Layout overflows**: This version is tuned for a ~16:10 MacBook display. If elements are cut off, reduce browser zoom (`Ctrl + -`).
+- Create `config.json` from `config.example.json` and keep it local
 
 ---
 
 ## License
 
-Proprietary / personal project. No public license.
+Personal project. No public license.

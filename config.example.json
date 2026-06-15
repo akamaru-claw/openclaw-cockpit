@@ -1,0 +1,33 @@
+{
+  "server": {
+    "port": 31337,
+    "host": "127.0.0.1"
+  },
+  "location": {
+    "name": "Paderborn",
+    "latitude": 51.7191,
+    "longitude": 8.7574,
+    "timezone": "Europe/Berlin"
+  },
+  "bitcoin": {
+    "updateSeconds": 60
+  },
+  "weather": {
+    "updateMinutes": 5
+  },
+  "websites": {
+    "checkIntervalMinutes": 10,
+    "sites": [
+      { "name": "example.com", "url": "https://example.com" }
+    ]
+  },
+  "services": {
+    "checks": [
+      { "name": "OpenClaw Gateway", "check": "ss -tlnp | grep -q \":18789\"" },
+      { "name": "Ollama", "check": "ss -tlnp | grep -q \":11434\"" }
+    ]
+  },
+  "chat": {
+    "maxHistory": 100
+  }
+}

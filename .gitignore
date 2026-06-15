@@ -1,7 +1,8 @@
 node_modules/
 npm-debug.log*
+.env*
+config.json
+chat.json
+state.json
 .DS_Store
-.env
 *.log
-public/data/
-dist/
