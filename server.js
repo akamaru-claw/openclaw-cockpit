@@ -8,10 +8,47 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 31337;
+const PORT = config.server.port || 31337;
+const HOST = config.server.host || '127.0.0.1';
+
+const CONFIG_FILE = path.join(__dirname, 'config.json');
+const DEFAULT_CONFIG = {
+  server: { port: 31337, host: '127.0.0.1' },
+  location: { name: 'Berlin', latitude: 52.52, longitude: 13.405, timezone: 'Europe/Berlin' },
+  bitcoin: { updateSeconds: 60 },
+  weather: { updateMinutes: 5 },
+  websites: {
+    checkIntervalMinutes: 10,
+    sites: [{ name: 'example.com', url: 'https://example.com' }]
+  },
+  services: {
+    checks: [
+      { name: 'OpenClaw Gateway', check: "ss -tlnp | grep -q ':18789'" },
+      { name: 'Ollama', check: "ss -tlnp | grep -q ':11434'" }
+    ]
+  },
+  chat: { maxHistory: 50 }
+};
+
+let config = DEFAULT_CONFIG;
+function loadConfig() {
+  try {
+    if (fs.existsSync(CONFIG_FILE)) {
+      const parsed = JSON.parse(fs.readFileSync(CONFIG_FILE, 'utf8'));
+      config = { ...DEFAULT_CONFIG, ...parsed };
+      if (parsed.location) config.location = { ...DEFAULT_CONFIG.location, ...parsed.location };
+      if (parsed.websites) config.websites = { ...DEFAULT_CONFIG.websites, ...parsed.websites };
+      if (parsed.services) config.services = { ...DEFAULT_CONFIG.services, ...parsed.services };
+      if (parsed.chat) config.chat = { ...DEFAULT_CONFIG.chat, ...parsed.chat };
+    }
+  } catch (e) {
+    console.error('Failed to load config.json, using defaults:', e.message);
+  }
+}
+loadConfig();
 
 const CHAT_FILE = path.join(__dirname, 'chat.json');
-const MAX_CHAT_HISTORY = 50;
+const MAX_CHAT_HISTORY = config.chat.maxHistory || 50;
 
 function readChatHistory() {
   try {
@@ -98,44 +135,27 @@ async function getMetrics() {
 }
 
 async function getServices() {
-  const services = [
-    { name: 'OpenClaw Gateway', check: 'ss -tlnp | grep -q ":18789"', port: 18789 },
-    { name: 'Ollama', check: 'ss -tlnp | grep -q ":11434"', port: 11434 },
-    { name: 'PhoenixD', check: 'ss -tlnp | grep -q ":9740"', port: 9740 },
-    { name: 'Home Assistant', check: 'curl -s -o /dev/null -w "%{http_code}" https://mugiwarahome.duckdns.org:8123', port: 8123 },
-    { name: 'Autodarts Dashboard', check: 'ss -tlnp | grep -q ":8765"', port: 8765 },
-    { name: 'T-Display Proxy', check: 'ss -tlnp | grep -q ":8888"', port: 8888 }
-  ];
-
+  const checks = (config.services && config.services.checks) || DEFAULT_CONFIG.services.checks;
   const results = [];
-  for (const s of services) {
+  for (const s of checks) {
     const out = await run(s.check);
     let status = 'down';
     if (out === '' || out === '200' || out === '301' || out === '302' || out === '401' || out === '403') {
       status = 'up';
     }
-    results.push({ ...s, status });
+    results.push({ name: s.name, status });
   }
   return results;
 }
 
-let cachedWebsites = [];
-let lastWebsiteCheck = 0;
-const WEBSITE_CHECK_INTERVAL = 10 * 60 * 1000;
-
 async function getWebsites() {
+  const sites = (config.websites && config.websites.sites) || DEFAULT_CONFIG.websites.sites;
+  const checkInterval = (config.websites && config.websites.checkIntervalMinutes || 10) * 60 * 1000;
   const now = Date.now();
-  if (now - lastWebsiteCheck < WEBSITE_CHECK_INTERVAL && cachedWebsites.length > 0) {
+
+  if (now - lastWebsiteCheck < checkInterval && cachedWebsites.length > 0) {
     return cachedWebsites.map(s => ({ ...s, cached: true }));
   }
-
-  const sites = [
-    { name: 'einhornkönig.de', url: 'https://einhornkönig.de' },
-    { name: 'krankenbuch.de', url: 'https://krankenbuch.de' },
-    { name: 'mauri-tools.de', url: 'https://mauri-tools.de' },
-    { name: 'op-return.de', url: 'https://op-return.de' },
-    { name: 'einhorn.live', url: 'https://einhorn.live' }
-  ];
 
   const results = [];
   for (const site of sites) {
@@ -144,9 +164,9 @@ async function getWebsites() {
       const [code, time] = out.split('|');
       const ms = Math.round(parseFloat(time) * 1000);
       const status = (code === '200' || code === '301' || code === '302' || code === '401' || code === '403') ? 'up' : 'down';
-      results.push({ ...site, status, code, ms, cached: false });
+      results.push({ name: site.name, url: site.url, status, code, ms, cached: false });
     } catch (e) {
-      results.push({ ...site, status: 'down', code: 'ERR', ms: 0, cached: false });
+      results.push({ name: site.name, url: site.url, status: 'down', code: 'ERR', ms: 0, cached: false });
     }
   }
 
@@ -155,16 +175,16 @@ async function getWebsites() {
   return results;
 }
 
-// initial website check on startup, then every 10 minutes
+// initial website check on startup, then every configured interval
 getWebsites().catch(console.error);
-setInterval(() => getWebsites().catch(console.error), WEBSITE_CHECK_INTERVAL);
+setInterval(() => getWebsites().catch(console.error), (config.websites && config.websites.checkIntervalMinutes || 10) * 60 * 1000);
 
 async function getOpenClawInfo() {
   const model = await run("ps aux | grep -oP 'openclaw.*--model\s+\K[^ ]+' | head -1");
   const status = await run("systemctl --user is-active openclaw 2>/dev/null || echo 'running'");
   return {
-    model: model || 'ollama/kimi-k2.7-code:cloud',
-    session: 'telegram:404307047',
+    model: model || 'unknown',
+    session: 'local',
     status: status || 'running'
   };
 }
@@ -223,7 +243,7 @@ async function updateBitcoinData() {
 }
 
 updateBitcoinData();
-setInterval(updateBitcoinData, 60000);
+setInterval(updateBitcoinData, (config.bitcoin?.updateSeconds || 60) * 1000);
 
 let realLifeData = {
   weather: { temp: 0, humidity: 0, wind: 0, condition: 'Unknown', isDay: true },
@@ -259,7 +279,8 @@ function getMoonPhase(date = new Date()) {
 
 async function updateRealLifeData() {
   try {
-    const url = 'https://api.open-meteo.com/v1/forecast?latitude=51.7191&longitude=8.7574&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,is_day&timezone=Europe/Berlin';
+    const loc = config.location || DEFAULT_CONFIG.location;
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${loc.latitude}&longitude=${loc.longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,is_day&timezone=${encodeURIComponent(loc.timezone || 'Europe/Berlin')}`;
     const data = await fetchJson(url, null);
     const current = data?.current;
     if (current) {
@@ -284,7 +305,7 @@ async function updateRealLifeData() {
 }
 
 updateRealLifeData();
-setInterval(updateRealLifeData, 300000);
+setInterval(updateRealLifeData, (config.weather?.updateMinutes || 5) * 60 * 1000);
 
 async function broadcast() {
   const payload = {
@@ -368,6 +389,6 @@ app.get('/status', async (req, res) => {
 
 setInterval(broadcast, 2000);
 
-app.listen(PORT, '127.0.0.1', () => {
-  console.log(`OpenClaw Cockpit server running on http://127.0.0.1:${PORT}`);
+app.listen(PORT, HOST, () => {
+  console.log(`OpenClaw Cockpit server running on http://${HOST}:${PORT}`);
 });
