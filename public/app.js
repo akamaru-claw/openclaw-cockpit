@@ -12,11 +12,12 @@ const hostTag = document.getElementById('host-tag');
 const footerStatus = document.getElementById('footer-status');
 
 const states = {
-  idle: { label: 'AKAMARU // IDLE', color: '#00f0ff', speed: '8s' },
-  listening: { label: 'AKAMARU // LISTENING', color: '#f7931a', speed: '1s' },
-  thinking: { label: 'AKAMARU // PROCESSING', color: '#ff2a6d', speed: '0.4s' },
-  working: { label: 'AKAMARU // WORKING', color: '#05ffa1', speed: '2s' },
-  alert: { label: 'AKAMARU // ALERT', color: '#ff2a6d', speed: '0.2s' }
+  idle: { label: 'AKAMARU // IDLE', color: '#00f0ff', file: 'avatar-idle.svg' },
+  thinking: { label: 'AKAMARU // THINKING', color: '#ff2a6d', file: 'avatar-thinking.svg' },
+  working: { label: 'AKAMARU // WORKING', color: '#05ffa1', file: 'avatar-working.svg' },
+  success: { label: 'AKAMARU // DONE', color: '#f7931a', file: 'avatar-success.svg' },
+  error: { label: 'AKAMARU // ERROR', color: '#ff2a6d', file: 'avatar-error.svg' },
+  sleeping: { label: 'AKAMARU // SLEEPING', color: '#7c7cff', file: 'avatar-sleeping.svg' }
 };
 
 const idleLines = [
@@ -40,37 +41,14 @@ let lastActivity = Date.now();
 
 function setAvatarState(state) {
   if (!states[state]) return;
+  if (currentState === state) return;
   currentState = state;
   const cfg = states[state];
   avatarState.textContent = cfg.label;
   avatarState.style.color = cfg.color;
   avatarState.style.textShadow = `0 0 12px ${cfg.color}`;
-
-  // Access SVG document inside <object> once loaded
-  const svgDoc = avatar.contentDocument;
-  if (!svgDoc) return;
-
-  const statusRing = svgDoc.querySelector('.status-ring');
-  const hudFast = svgDoc.querySelector('.hud-ring-fast');
-  const hudSlow = svgDoc.querySelector('.hud-ring-slow');
-  const circuits = svgDoc.querySelector('.circuits');
-
-  if (statusRing) {
-    statusRing.style.stroke = cfg.color;
-    statusRing.style.animationDuration = cfg.speed;
-    statusRing.style.filter = `drop-shadow(0 0 8px ${cfg.color})`;
-  }
-  if (hudFast) {
-    hudFast.style.stroke = cfg.color;
-    hudFast.style.animationDuration = cfg.speed;
-  }
-  if (hudSlow) {
-    hudSlow.style.stroke = cfg.color;
-    hudSlow.style.opacity = '0.4';
-  }
-  if (circuits) {
-    circuits.style.stroke = cfg.color;
-  }
+  avatar.setAttribute('data', cfg.file);
+  log(`State switched: ${state}`, 'STATE');
 }
 
 function whenAvatarReady(fn) {
@@ -133,14 +111,14 @@ function updateOpenClaw(info) {
   document.getElementById('oc-status').textContent = info.status.toUpperCase();
 }
 
-function detectState(metrics, services) {
+function detectLocalState(metrics, services, log) {
   const downCount = services.filter(s => s.status === 'down').length;
-  const highLoad = metrics.cpu > 70 || metrics.ram > 85;
-
-  if (downCount > 2) return 'alert';
-  if (highLoad) return 'working';
-  if (Date.now() - lastActivity < 5000) return 'listening';
-  return 'idle';
+  const logText = log || '';
+  if (downCount > 2) return 'error';
+  if (logText.includes('Tool:') || logText.includes('exec') || logText.includes('working')) return 'working';
+  if (metrics.cpu > 70 || metrics.ram > 85) return 'working';
+  if (Date.now() - lastActivity > 60000) return 'sleeping';
+  return null;
 }
 
 function connect() {
@@ -150,8 +128,6 @@ function connect() {
     footerStatus.textContent = 'connection: live stream active';
     footerStatus.style.color = '#05ffa1';
     log('Live stream verbunden.', 'NET');
-    setAvatarState('working');
-    setTimeout(() => setAvatarState('idle'), 3000);
   };
 
   source.onmessage = (event) => {
@@ -162,9 +138,11 @@ function connect() {
       updateOpenClaw(data.openclaw);
       log(data.log || 'System tick received', 'SYS');
 
-      const newState = detectState(data.metrics, data.services);
-      if (newState !== currentState) {
-        setAvatarState(newState);
+      const remoteState = data.state;
+      const localState = detectLocalState(data.metrics, data.services, data.log);
+      const nextState = remoteState && remoteState !== 'idle' ? remoteState : (localState || 'idle');
+      if (nextState !== currentState) {
+        setAvatarState(nextState);
       }
     }
   };
@@ -172,7 +150,7 @@ function connect() {
   source.onerror = () => {
     footerStatus.textContent = 'connection: stream lost - retrying...';
     footerStatus.style.color = '#ff2a6d';
-    setAvatarState('alert');
+    setAvatarState('error');
     source.close();
     setTimeout(connect, 3000);
   };

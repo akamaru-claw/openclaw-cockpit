@@ -14,6 +14,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const clients = new Set();
 
+const STATE_FILE = path.join(__dirname, 'state.json');
+const DEFAULT_STATE = 'idle';
+
+function readState() {
+  try {
+    if (fs.existsSync(STATE_FILE)) {
+      const data = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
+      return data.state || DEFAULT_STATE;
+    }
+  } catch (e) {
+    // ignore
+  }
+  return DEFAULT_STATE;
+}
+
 function run(cmd, timeout = 5000) {
   return new Promise((resolve) => {
     exec(cmd, { timeout }, (err, stdout, stderr) => {
@@ -80,6 +95,7 @@ async function broadcast() {
   const payload = {
     type: 'tick',
     ts: new Date().toISOString(),
+    state: readState(),
     metrics: await getMetrics(),
     services: await getServices(),
     openclaw: await getOpenClawInfo(),
@@ -91,6 +107,24 @@ async function broadcast() {
     res.write(data);
   }
 }
+
+app.get('/state', (req, res) => {
+  res.json({ state: readState(), ts: new Date().toISOString() });
+});
+
+app.get('/set-state', (req, res) => {
+  const allowed = ['idle', 'thinking', 'working', 'success', 'error', 'sleeping'];
+  const state = req.query.state;
+  if (!allowed.includes(state)) {
+    return res.status(400).json({ error: 'invalid state' });
+  }
+  try {
+    fs.writeFileSync(STATE_FILE, JSON.stringify({ state, ts: new Date().toISOString() }));
+    res.json({ state });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
+  }
+});
 
 app.get('/stream', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
@@ -107,6 +141,7 @@ app.get('/stream', (req, res) => {
 
 app.get('/status', async (req, res) => {
   res.json({
+    state: readState(),
     metrics: await getMetrics(),
     services: await getServices(),
     openclaw: await getOpenClawInfo()
