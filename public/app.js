@@ -12,12 +12,14 @@ const hostTag = document.getElementById('host-tag');
 const footerStatus = document.getElementById('footer-status');
 
 const states = {
+  sleeping: { label: 'AKAMARU // SLEEPING', color: '#7c7cff', file: 'avatar-sleeping.svg' },
   idle: { label: 'AKAMARU // IDLE', color: '#00f0ff', file: 'avatar-idle.svg' },
+  reading: { label: 'AKAMARU // READING', color: '#f7931a', file: 'avatar-reading.svg' },
   thinking: { label: 'AKAMARU // THINKING', color: '#ff2a6d', file: 'avatar-thinking.svg' },
   working: { label: 'AKAMARU // WORKING', color: '#05ffa1', file: 'avatar-working.svg' },
-  success: { label: 'AKAMARU // DONE', color: '#f7931a', file: 'avatar-success.svg' },
-  error: { label: 'AKAMARU // ERROR', color: '#ff2a6d', file: 'avatar-error.svg' },
-  sleeping: { label: 'AKAMARU // SLEEPING', color: '#7c7cff', file: 'avatar-sleeping.svg' }
+  cron: { label: 'AKAMARU // CRON', color: '#FFD700', file: 'avatar-cron.svg' },
+  done: { label: 'AKAMARU // DONE', color: '#00ff88', file: 'avatar-done.svg' },
+  error: { label: 'AKAMARU // ERROR', color: '#ff2a2a', file: 'avatar-error.svg' }
 };
 
 const idleLines = [
@@ -28,12 +30,52 @@ const idleLines = [
   'Akamaru online.'
 ];
 
-const workLines = [
+const sleepLines = [
+  'Zzz...',
+  'Im Energiesparmodus.',
+  'Akamaru schläft.',
+  'Warte auf Weckruf...'
+];
+
+const readLines = [
+  'Neue Nachricht erkannt...',
+  'Input wird verarbeitet...',
+  'Lese Daten...',
+  'Befehl empfangen.'
+];
+
+const thinkLines = [
   'Berechne Szenarien...',
   'Verarbeite Daten...',
-  'Verbinde Dienste...',
   'Optimiere Ausgabe...',
-  'Sammle Metriken...'
+  'Denke nach...'
+];
+
+const workLines = [
+  'Führe Befehle aus...',
+  'Verbinde Dienste...',
+  'Sammle Metriken...',
+  'Arbeite...'
+];
+
+const cronLines = [
+  'Cron-Job läuft...',
+  'Hintergrundtask aktiv...',
+  'Timer ausgelöst...'
+];
+
+const doneLines = [
+  'Aufgabe erledigt!',
+  'Erfolgreich gesendet.',
+  'Fertig.',
+  'Erledigt!'
+];
+
+const errorLines = [
+  'Achtung: Fehler erkannt.',
+  'Systemwarnung!',
+  'Etwas ist schiefgelaufen.',
+  'Fehler!'
 ];
 
 let currentState = 'idle';
@@ -115,6 +157,7 @@ function detectLocalState(metrics, services, log) {
   const downCount = services.filter(s => s.status === 'down').length;
   const logText = log || '';
   if (downCount > 2) return 'error';
+  if (logText.includes('cron') || logText.includes('Cron')) return 'cron';
   if (logText.includes('Tool:') || logText.includes('exec') || logText.includes('working')) return 'working';
   if (metrics.cpu > 70 || metrics.ram > 85) return 'working';
   if (Date.now() - lastActivity > 60000) return 'sleeping';
@@ -160,12 +203,20 @@ function connect() {
 setInterval(() => {
   if (currentState === 'idle') {
     voiceLines.textContent = pickLine(idleLines);
+  } else if (currentState === 'sleeping') {
+    voiceLines.textContent = pickLine(sleepLines);
+  } else if (currentState === 'reading') {
+    voiceLines.textContent = pickLine(readLines);
+  } else if (currentState === 'thinking') {
+    voiceLines.textContent = pickLine(thinkLines);
   } else if (currentState === 'working') {
     voiceLines.textContent = pickLine(workLines);
-  } else if (currentState === 'alert') {
-    voiceLines.textContent = 'Achtung: Mehrere Dienste offline.';
-  } else if (currentState === 'listening') {
-    voiceLines.textContent = 'Ich höre zu...';
+  } else if (currentState === 'cron') {
+    voiceLines.textContent = pickLine(cronLines);
+  } else if (currentState === 'done') {
+    voiceLines.textContent = pickLine(doneLines);
+  } else if (currentState === 'error') {
+    voiceLines.textContent = pickLine(errorLines);
   }
 }, 5000);
 
