@@ -130,8 +130,14 @@ async function getOpenClawInfo() {
 }
 
 async function getLogLine() {
-  const line = await run("journalctl -b 0 -n 1 --no-pager 2>/dev/null | tail -1");
-  return line;
+  const topProc = await run("ps -eo pid,pcpu,comm --sort=-pcpu | head -2 | tail -1 | awk '{print $1 \" \" $2 \"% \" $3}'");
+  const topMem = await run("ps -eo pid,pmem,comm --sort=-pmem | head -2 | tail -1 | awk '{print $1 \" \" $2 \"% \" $3}'");
+  const netConn = await run("ss -t -a state established '( dport = :18789 or sport = :18789 or dport = :11434 or sport = :11434 )' | tail -1 | awk '{print $4 \" <-> \" $5}'");
+  const latestLog = await run("journalctl --user -n 1 --no-pager 2>/dev/null | tail -1 | sed 's/^[^ ]* [^ ]* //'");
+  const ioLoad = await run("iostat -c 1 1 2>/dev/null | awk '/^$/ {next} /avg-cpu/ {getline; printf \"usr:%s sys:%s io:%s idle:%s\", $1, $3, $4, $NF}'");
+  const activeUsers = await run("who | wc -l");
+  const dockerPs = await run("docker ps --format '{{.Names}}' 2>/dev/null | head -5 | tr '\n' ' ' || echo 'docker not available'");
+  return `[CPU] ${topProc} | [MEM] ${topMem} | [NET] ${netConn || 'no active svc conn'} | [JOURNAL] ${latestLog} | [IO] ${ioLoad} | [USERS] ${activeUsers} | [DOCKER] ${dockerPs}`;
 }
 
 async function broadcast() {
@@ -213,6 +219,6 @@ app.get('/status', async (req, res) => {
 
 setInterval(broadcast, 2000);
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`OpenClaw Cockpit server running on http://0.0.0.0:${PORT}`);
+app.listen(PORT, '127.0.0.1', () => {
+  console.log(`OpenClaw Cockpit server running on http://127.0.0.1:${PORT}`);
 });
