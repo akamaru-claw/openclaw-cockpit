@@ -12,14 +12,14 @@ const hostTag = document.getElementById('host-tag');
 const footerStatus = document.getElementById('footer-status');
 
 const states = {
-  sleeping: { label: 'AKAMARU // SLEEPING', color: '#7c7cff', file: 'avatar-sleeping.svg' },
-  idle: { label: 'AKAMARU // IDLE', color: '#00f0ff', file: 'avatar-idle.svg' },
-  reading: { label: 'AKAMARU // READING', color: '#f7931a', file: 'avatar-reading.svg' },
-  thinking: { label: 'AKAMARU // THINKING', color: '#ff2a6d', file: 'avatar-thinking.svg' },
-  working: { label: 'AKAMARU // WORKING', color: '#05ffa1', file: 'avatar-working.svg' },
+  sleeping: { label: 'AKAMARU // SLEEPING', color: '#9FA8DA', file: 'avatar-sleeping.svg' },
+  idle: { label: 'AKAMARU // IDLE', color: '#00FFFF', file: 'avatar-idle.svg' },
+  reading: { label: 'AKAMARU // READING', color: '#00FFFF', file: 'avatar-reading.svg' },
+  thinking: { label: 'AKAMARU // THINKING', color: '#E040FB', file: 'avatar-thinking.svg' },
+  working: { label: 'AKAMARU // WORKING', color: '#FF5252', file: 'avatar-working.svg' },
   cron: { label: 'AKAMARU // CRON', color: '#FFD700', file: 'avatar-cron.svg' },
-  done: { label: 'AKAMARU // DONE', color: '#00ff88', file: 'avatar-done.svg' },
-  error: { label: 'AKAMARU // ERROR', color: '#ff2a2a', file: 'avatar-error.svg' }
+  done: { label: 'AKAMARU // DONE', color: '#FF4081', file: 'avatar-done.svg' },
+  error: { label: 'AKAMARU // ERROR', color: '#FF2A2A', file: 'avatar-error.svg' }
 };
 
 const idleLines = [

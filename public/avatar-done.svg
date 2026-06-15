@@ -1,40 +1,40 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
   <defs>
-    <radialGradient id="spaceBg" cx="50%" cy="50%" r="75%"><stop offset="0%" stop-color="#C2185B" /><stop offset="45%" stop-color="#880E4F" /><stop offset="80%" stop-color="#2D0014" /><stop offset="100%" stop-color="#0F0005" /></radialGradient>
+    <radialGradient id="spaceBgDone" cx="50%" cy="50%" r="75%"><stop offset="0%" stop-color="#FF5252" /><stop offset="60%" stop-color="#C2185B" /><stop offset="100%" stop-color="#1A0000" /></radialGradient>
     <linearGradient id="helmetGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FF5252" /><stop offset="100%" stop-color="#B71C1C" /></linearGradient>
     <linearGradient id="orangeFur" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FF6347" /><stop offset="100%" stop-color="#CC3300" /></linearGradient>
-    <filter id="cyanGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+    <filter id="successCyanGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+    <filter id="starburstGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
   </defs>
   <style>
-    .float-head { transform-origin: 250px 250px; animation: float 6s infinite ease-in-out; }
-    .tail-up { transform-origin: 320px 300px; transform: rotate(15deg); animation: wagSlow 2s infinite alternate ease-in-out; }
-    .wink { transform-origin: center; animation: winking 4s infinite; }
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    @keyframes wagSlow { 0% { transform: rotate(15deg); } 100% { transform: rotate(35deg); } }
-    @keyframes winking { 0%, 90%, 100% { transform: scaleY(1); opacity: 1; } 95% { transform: scaleY(0.1); opacity: 0.5; } }
+    .triumphal-head { transform-origin: 250px 250px; animation: floatTriumph 6s infinite ease-in-out; }
+    .starburst { transform-origin: center; animation: starburstAnim 1s infinite alternate ease-in-out; }
+    .wink { transform-origin: center; animation: doneWink 4s infinite; }
+    @keyframes floatTriumph { 0%, 100% { transform: translateY(0) rotate(2deg); } 50% { transform: translateY(-10px) rotate(-2deg); } }
+    @keyframes starburstAnim { 0% { opacity: 0.1; transform: scale(1); } 100% { opacity: 0.8; transform: scale(1.15); } }
+    @keyframes doneWink { 0%, 90%, 100% { transform: scaleY(1); opacity: 1; } 95% { transform: scaleY(0.1); opacity: 0.5; } }
   </style>
-  <rect width="500" height="500" fill="url(#spaceBg)" />
-  <g transform="translate(-50, -20) scale(1.2)">
-    <g class="tail-up">
-      <path d="M 320 340 Q 420 280 390 200 Q 450 300 340 380 Z" fill="url(#orangeFur)" stroke="#4A0000" stroke-width="3"/>
-      <path d="M 355 250 Q 375 255 385 245" fill="none" stroke="#4A0000" stroke-width="3"/>
-      <path d="M 350 290 Q 375 295 385 285" fill="none" stroke="#4A0000" stroke-width="3"/>
+  <rect width="500" height="500" fill="url(#spaceBgDone)" />
+  
+  <g class="triumphal-head">
+    <g filter="url(#starburstGlow)" opacity="0.6" class="starburst" fill="#FFF">
+      <path d="M 250 50 L 250 150 M 250 350 L 250 450 M 50 250 L 150 250 M 350 250 L 450 250" stroke="#FFF" stroke-width="2"/>
+      <path d="M 120 120 L 180 180 M 320 320 L 380 380 M 120 380 L 180 320 M 320 120 L 380 180" stroke="#FFF" stroke-width="1.5"/>
+      <circle cx="100" cy="100" r="2"/><circle cx="400" cy="100" r="2"/><circle cx="100" cy="400" r="2"/><circle cx="400" cy="400" r="2"/>
     </g>
-    <g class="float-head">
-      <g><path d="M 170 200 C 100 200, 110 400, 140 420 C 170 440, 180 300, 170 200 Z" fill="url(#orangeFur)" stroke="#4A0000" stroke-width="3"/><path d="M 160 220 C 120 220, 130 380, 145 400 C 160 420, 170 300, 160 220 Z" fill="#FDF5E6" /></g>
-      <g><path d="M 330 200 C 400 200, 390 400, 360 420 C 330 440, 320 300, 330 200 Z" fill="url(#orangeFur)" stroke="#4A0000" stroke-width="3"/><path d="M 340 220 C 380 220, 370 380, 355 400 C 340 420, 330 300, 340 220 Z" fill="#FDF5E6" /></g>
+    
+    <g transform="translate(-50, -20) scale(1.2)">
+      <g><path d="M 170 200 C 100 200, 110 400, 140 420 C 170 440, 180 300, 170 200 Z" fill="url(#orangeFur)" stroke="#3E2723" stroke-width="3"/><path d="M 160 220 C 120 220, 130 380, 145 400 C 160 420, 170 300, 160 220 Z" fill="#FDF5E6" /></g>
+      <g><path d="M 330 200 C 400 200, 390 400, 360 420 C 330 440, 320 300, 330 200 Z" fill="url(#orangeFur)" stroke="#3E2723" stroke-width="3"/><path d="M 340 220 C 380 220, 370 380, 355 400 C 340 420, 330 300, 340 220 Z" fill="#FDF5E6" /></g>
       <path d="M 160 200 C 145 320, 160 380, 250 380 C 340 380, 355 320, 340 200 Z" fill="#FDF5E6" stroke="#3E2723" stroke-width="3"/>
       <path d="M 225 375 L 235 400 L 250 385 L 265 400 L 275 375 Z" fill="#FDF5E6" stroke="#3E2723" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M 155 200 C 155 80, 345 80, 345 200 Z" fill="url(#helmetGrad)" stroke="#3E2723" stroke-width="3"/>
-      <line x1="155" y1="200" x2="345" y2="200" stroke="#3E2723" stroke-width="5" stroke-linecap="round"/>
-      <g><path d="M 250 100 Q 265 75 270 50" fill="none" stroke="#FF5252" stroke-width="5" stroke-linecap="round"/><circle cx="270" cy="50" r="10" fill="#FF5252" stroke="#3E2723" stroke-width="2"/></g>
-      <path d="M 180 250 Q 205 260 220 250" fill="none" stroke="#212121" stroke-width="3" stroke-linecap="round"/>
-      <path d="M 280 250 Q 295 260 320 250" fill="none" stroke="#212121" stroke-width="3" stroke-linecap="round"/>
-      <path d="M 235 285 L 265 285 L 250 305 Z" fill="#3E2723" stroke="#3E2723" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M 190 335 Q 250 365 310 335" fill="none" stroke="#3E2723" stroke-width="12" stroke-linecap="round"/>
-      <path d="M 195 335 Q 250 360 305 335" fill="none" stroke="#1A0000" stroke-width="3" stroke-linecap="round"/>
-      <g transform="translate(205, 155)"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#cyanGlow)"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/></g>
-      <g transform="translate(295, 155)" class="wink"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#cyanGlow)"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/></g>
+      <path d="M 155 200 C 155 80, 345 80, 345 200 Z" fill="url(#helmetGrad)" stroke="#3E2723" stroke-width="3"/><line x1="155" y1="200" x2="345" y2="200" stroke="#3E2723" stroke-width="5" stroke-linecap="round"/>
+      <g><path d="M 250 100 Q 265 75 270 50" fill="none" stroke="#FF5252" stroke-width="5"/><circle cx="270" cy="50" r="10" fill="#FF5252" stroke="#3E2723"/></g>
+      <path d="M 180 250 Q 205 260 220 250" fill="none" stroke="#212121" stroke-width="3"/><path d="M 280 250 Q 295 260 320 250" fill="none" stroke="#212121" stroke-width="3"/>
+      <path d="M 235 285 L 265 285 L 250 305 Z" fill="#3E2723" stroke="#3E2723" stroke-width="3"/>
+      <path d="M 190 335 Q 250 365 310 335" fill="none" stroke="#3E2723" stroke-width="12"/><path d="M 195 335 Q 250 360 305 335" fill="none" stroke="#1A0000" stroke-width="3"/>
+      <g transform="translate(205, 155)"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#successCyanGlow)"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/></g>
+      <g transform="translate(295, 155)" class="wink"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#successCyanGlow)"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/></g>
     </g>
   </g>
 </svg>

@@ -1,40 +1,45 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
   <defs>
-    <radialGradient id="spaceBg" cx="50%" cy="50%" r="75%"><stop offset="0%" stop-color="#C2185B" /><stop offset="45%" stop-color="#880E4F" /><stop offset="80%" stop-color="#2D0014" /><stop offset="100%" stop-color="#0F0005" /></radialGradient>
+    <radialGradient id="spaceBgReading" cx="50%" cy="50%" r="75%"><stop offset="0%" stop-color="#C2185B" /><stop offset="45%" stop-color="#880E4F" /><stop offset="100%" stop-color="#0F0005" /></radialGradient>
     <linearGradient id="helmetGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FF5252" /><stop offset="100%" stop-color="#B71C1C" /></linearGradient>
     <linearGradient id="orangeFur" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FF6347" /><stop offset="100%" stop-color="#CC3300" /></linearGradient>
-    <filter id="cyanGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+    <filter id="superCyanGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+    <filter id="plasmaGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="5" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
   </defs>
   <style>
-    .float-head { transform-origin: 250px 250px; animation: float 5s infinite ease-in-out; }
-    .ear-up-left { transform-origin: 170px 200px; transform: rotate(20deg); }
-    .ear-up-right { transform-origin: 330px 200px; transform: rotate(-20deg); }
-    .vibrate-antenna { transform-origin: 250px 100px; animation: vibrate 0.1s infinite linear; }
-    .star-fast { animation: twinkle 1s infinite alternate; }
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    @keyframes vibrate { 0% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } 100% { transform: rotate(-3deg); } }
-    @keyframes twinkle { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
+    .read-head { transform-origin: 250px 250px; animation: readFloat 5s infinite ease-in-out; }
+    .laser-beam { transform-origin: center; animation: laserScale 0.1s infinite alternate linear; }
+    .plasma-orb { animation: plasmaTwinkle 0.5s infinite alternate ease-in-out; }
+    @keyframes readFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @keyframes laserScale { 0% { transform: scaleY(1); opacity: 0.8; } 100% { transform: scaleY(1.05); opacity: 1; } }
+    @keyframes plasmaTwinkle { 0% { opacity: 0.6; transform: scale(1); } 100% { opacity: 1; transform: scale(1.1); } }
   </style>
-  <rect width="500" height="500" fill="url(#spaceBg)" />
-  <g fill="#FFF" opacity="0.8">
-    <circle cx="80" cy="120" r="1.5" class="star-fast" /><circle cx="40" cy="250" r="2" fill="#FFC0CB"/><circle cx="100" cy="380" r="1" /><circle cx="180" cy="60" r="2" class="star-fast" /><circle cx="450" cy="220" r="2" class="star-fast" />
-  </g>
+  <rect width="500" height="500" fill="url(#spaceBgReading)" />
+  <g fill="#FFF" opacity="0.8"><circle cx="80" cy="120" r="1.5"/><circle cx="200" cy="60" r="1.5"/><circle cx="450" cy="220" r="1"/><circle cx="100" cy="380" r="2"/></g>
+  
   <g transform="translate(-50, -20) scale(1.2)">
-    <g class="float-head">
-      <g class="ear-up-left"><path d="M 170 200 C 100 200, 110 400, 140 420 C 170 440, 180 300, 170 200 Z" fill="url(#orangeFur)" stroke="#4A0000" stroke-width="3"/><path d="M 160 220 C 120 220, 130 380, 145 400 C 160 420, 170 300, 160 220 Z" fill="#FDF5E6" /></g>
-      <g class="ear-up-right"><path d="M 330 200 C 400 200, 390 400, 360 420 C 330 440, 320 300, 330 200 Z" fill="url(#orangeFur)" stroke="#4A0000" stroke-width="3"/><path d="M 340 220 C 380 220, 370 380, 355 400 C 340 420, 330 300, 340 220 Z" fill="#FDF5E6" /></g>
+    <g class="read-head">
+      <g transform="translate(170, 200) rotate(-45)">
+        <path d="M 0 0 C 70 0, 80 -200, 40 -220 C 10 -240, 0 -150, 0 0 Z" fill="#FDF5E6" stroke="#3E2723" stroke-width="3"/>
+        <path d="M 20 -50 L 30 -70 L 10 -90 M 15 -110 L 25 -130 M 10 -150 L 20 -170" stroke="#00FFFF" stroke-width="1.5" opacity="0.6"/>
+      </g>
+      <g transform="translate(330, 200) rotate(45)">
+        <path d="M 0 0 C -70 0, -80 -200, -40 -220 C -10 -240, 0 -150, 0 0 Z" fill="#FDF5E6" stroke="#3E2723" stroke-width="3"/>
+        <path d="M -20 -50 L -30 -70 L -10 -90 M -15 -110 L -25 -130 M -10 -150 L -20 -170" stroke="#00FFFF" stroke-width="1.5" opacity="0.6"/>
+      </g>
+      
       <path d="M 160 200 C 145 320, 160 380, 250 380 C 340 380, 355 320, 340 200 Z" fill="#FDF5E6" stroke="#3E2723" stroke-width="3"/>
       <path d="M 225 375 L 235 400 L 250 385 L 265 400 L 275 375 Z" fill="#FDF5E6" stroke="#3E2723" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M 155 200 C 155 80, 345 80, 345 200 Z" fill="url(#helmetGrad)" stroke="#3E2723" stroke-width="3"/>
-      <line x1="155" y1="200" x2="345" y2="200" stroke="#3E2723" stroke-width="5" stroke-linecap="round"/>
-      <g class="vibrate-antenna"><path d="M 250 100 Q 265 75 270 50" fill="none" stroke="#FF5252" stroke-width="5" stroke-linecap="round"/><circle cx="270" cy="50" r="10" fill="#FF5252" stroke="#3E2723" stroke-width="2"/></g>
-      <path d="M 180 250 Q 205 260 220 250" fill="none" stroke="#212121" stroke-width="3" stroke-linecap="round"/>
-      <path d="M 280 250 Q 295 260 320 250" fill="none" stroke="#212121" stroke-width="3" stroke-linecap="round"/>
-      <path d="M 235 285 L 265 285 L 250 305 Z" fill="#3E2723" stroke="#3E2723" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M 190 345 Q 250 325 310 345" fill="none" stroke="#3E2723" stroke-width="12" stroke-linecap="round"/>
-      <path d="M 195 345 Q 250 330 305 345" fill="none" stroke="#1A0000" stroke-width="3" stroke-linecap="round"/>
-      <g transform="translate(205, 155)"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#cyanGlow)"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/></g>
-      <g transform="translate(295, 155)"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#cyanGlow)"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/></g>
+      <path d="M 155 200 C 155 80, 345 80, 345 200 Z" fill="url(#helmetGrad)" stroke="#3E2723" stroke-width="3"/><line x1="155" y1="200" x2="345" y2="200" stroke="#3E2723" stroke-width="5" stroke-linecap="round"/>
+      
+      <g transform="translate(250, 100) rotate(0)"><path d="M 0 0 Q 15 -25 20 -50" fill="none" stroke="#FF5252" stroke-width="5"/><circle cx="20" cy="-50" r="10" fill="#FF5252" stroke="#3E2723"/><circle cx="20" cy="-50" r="15" fill="#00FFFF" filter="url(#plasmaGlow)" class="plasma-orb" opacity="0.7"/></g>
+      
+      <path d="M 180 250 Q 205 260 220 250" fill="none" stroke="#212121" stroke-width="3"/><path d="M 280 250 Q 295 260 320 250" fill="none" stroke="#212121" stroke-width="3"/>
+      <path d="M 235 285 L 265 285 L 250 305 Z" fill="#3E2723" stroke="#3E2723" stroke-width="3"/>
+      <path d="M 190 345 Q 250 325 310 345" fill="none" stroke="#3E2723" stroke-width="12"/><path d="M 195 345 Q 250 330 305 345" fill="none" stroke="#1A0000" stroke-width="3"/>
+      
+      <g transform="translate(205, 155)"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#superCyanGlow)"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/><path d="M 0 0 L 0 300" stroke="#00FFFF" stroke-width="5" opacity="0.7" class="laser-beam"/></g>
+      <g transform="translate(295, 155)"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#superCyanGlow)"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/><path d="M 0 0 L 0 300" stroke="#00FFFF" stroke-width="5" opacity="0.7" class="laser-beam"/></g>
     </g>
   </g>
 </svg>

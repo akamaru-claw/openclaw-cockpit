@@ -1,45 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="100%" height="100%">
   <defs>
-    <radialGradient id="spaceBg" cx="50%" cy="50%" r="75%"><stop offset="0%" stop-color="#C2185B" /><stop offset="45%" stop-color="#880E4F" /><stop offset="80%" stop-color="#2D0014" /><stop offset="100%" stop-color="#0F0005" /></radialGradient>
+    <radialGradient id="spaceBgIdle" cx="50%" cy="50%" r="75%"><stop offset="0%" stop-color="#C2185B" /><stop offset="60%" stop-color="#880E4F" /><stop offset="100%" stop-color="#1A0000" /></radialGradient>
     <linearGradient id="helmetGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FF5252" /><stop offset="100%" stop-color="#B71C1C" /></linearGradient>
     <linearGradient id="orangeFur" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#FF6347" /><stop offset="100%" stop-color="#CC3300" /></linearGradient>
-    <filter id="cyanGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+    <filter id="intenseCyanGlow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8" result="blur" /><feMerge><feMergeNode in="blur" /><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+    <pattern id="hexGrid" patternUnits="userSpaceOnUse" width="10" height="17.32" patternTransform="rotate(45)">
+      <path d="M 0 0 L 5 8.66 L 10 0 M 10 17.32 L 5 8.66 L 0 17.32" stroke="#00FFFF" stroke-width="0.5" fill="none" opacity="0.3"/>
+    </pattern>
   </defs>
   <style>
-    .float-head { transform-origin: 250px 250px; animation: float 6s infinite ease-in-out; }
-    .cyber-eye { animation: pulseGlow 2s infinite alternate ease-in-out; }
-    .ear-left { transform-origin: 170px 200px; animation: twitchLeft 7s infinite ease-in-out; }
-    .ear-right { transform-origin: 330px 200px; animation: twitchRight 6s infinite ease-in-out; }
-    .antenna { transform-origin: 250px 100px; animation: sway 3s infinite ease-in-out; }
-    .star1 { animation: twinkle 3s infinite alternate; }
-    .star2 { animation: twinkle 4s infinite alternate-reverse; }
-    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-    @keyframes pulseGlow { 0% { opacity: 0.8; filter: drop-shadow(0 0 8px #00FFFF); } 100% { opacity: 1; filter: drop-shadow(0 0 20px #00FFFF); } }
-    @keyframes twitchLeft { 0%, 90%, 100% { transform: rotate(0deg); } 93% { transform: rotate(4deg); } 96% { transform: rotate(-2deg); } }
-    @keyframes twitchRight { 0%, 80%, 100% { transform: rotate(0deg); } 83% { transform: rotate(-5deg); } 86% { transform: rotate(2deg); } }
-    @keyframes sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
-    @keyframes twinkle { 0% { opacity: 0.2; transform: scale(0.8); } 100% { opacity: 1; transform: scale(1.2); } }
+    .ready-float { transform-origin: 250px 250px; animation: floatAndShield 6s infinite ease-in-out; }
+    .intense-pulse { animation: pulseIntense 2s infinite alternate ease-in-out; }
+    .shield-matrix { transform-origin: center; animation: matrixSpin 20s linear infinite; }
+    @keyframes floatAndShield { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.01); } }
+    @keyframes pulseIntense { 0% { opacity: 0.7; filter: drop-shadow(0 0 10px #00FFFF); } 100% { opacity: 1; filter: drop-shadow(0 0 25px #00FFFF); } }
+    @keyframes matrixSpin { 100% { transform: rotate(360deg); } }
   </style>
-  <rect width="500" height="500" fill="url(#spaceBg)" />
-  <g fill="#FFF" opacity="0.8">
-    <circle cx="80" cy="120" r="1.5" class="star1" /><circle cx="40" cy="250" r="2" class="star2" fill="#FFC0CB"/><circle cx="100" cy="380" r="1" /><circle cx="180" cy="60" r="2" class="star1" /><circle cx="450" cy="220" r="2" class="star2" /><circle cx="420" cy="400" r="2.5" class="star1" fill="#FFC0CB"/>
-  </g>
-  <g transform="translate(-50, -20) scale(1.2)">
-    <g class="float-head">
-      <g class="ear-left"><path d="M 170 200 C 100 200, 110 400, 140 420 C 170 440, 180 300, 170 200 Z" fill="url(#orangeFur)" stroke="#4A0000" stroke-width="3"/><path d="M 160 220 C 120 220, 130 380, 145 400 C 160 420, 170 300, 160 220 Z" fill="#FDF5E6" /></g>
-      <g class="ear-right"><path d="M 330 200 C 400 200, 390 400, 360 420 C 330 440, 320 300, 330 200 Z" fill="url(#orangeFur)" stroke="#4A0000" stroke-width="3"/><path d="M 340 220 C 380 220, 370 380, 355 400 C 340 420, 330 300, 340 220 Z" fill="#FDF5E6" /></g>
+  <rect width="500" height="500" fill="url(#spaceBgIdle)" />
+  <g fill="#FFF" opacity="0.7"><circle cx="80" cy="120" r="1.5"/><circle cx="200" cy="60" r="1.5"/><circle cx="450" cy="220" r="1"/><circle cx="100" cy="380" r="2"/></g>
+  
+  <g class="ready-float">
+    <circle cx="250" cy="250" r="180" fill="url(#hexGrid)" stroke="#00FFFF" stroke-width="1.5" opacity="0.4" class="shield-matrix"/>
+    
+    <g transform="translate(-50, -20) scale(1.2)">
+      <g><path d="M 170 200 C 100 200, 110 400, 140 420 C 170 440, 180 300, 170 200 Z" fill="url(#orangeFur)" stroke="#3E2723" stroke-width="3"/><path d="M 160 220 C 120 220, 130 380, 145 400 C 160 420, 170 300, 160 220 Z" fill="#FDF5E6" /></g>
+      <g><path d="M 330 200 C 400 200, 390 400, 360 420 C 330 440, 320 300, 330 200 Z" fill="url(#orangeFur)" stroke="#3E2723" stroke-width="3"/><path d="M 340 220 C 380 220, 370 380, 355 400 C 340 420, 330 300, 340 220 Z" fill="#FDF5E6" /></g>
       <path d="M 160 200 C 145 320, 160 380, 250 380 C 340 380, 355 320, 340 200 Z" fill="#FDF5E6" stroke="#3E2723" stroke-width="3"/>
       <path d="M 225 375 L 235 400 L 250 385 L 265 400 L 275 375 Z" fill="#FDF5E6" stroke="#3E2723" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M 155 200 C 155 80, 345 80, 345 200 Z" fill="url(#helmetGrad)" stroke="#3E2723" stroke-width="3"/>
-      <line x1="155" y1="200" x2="345" y2="200" stroke="#3E2723" stroke-width="5" stroke-linecap="round"/>
-      <g class="antenna"><path d="M 250 100 Q 265 75 270 50" fill="none" stroke="#FF5252" stroke-width="5" stroke-linecap="round"/><circle cx="270" cy="50" r="10" fill="#FF5252" stroke="#3E2723" stroke-width="2"/></g>
-      <path d="M 180 250 Q 205 260 220 250" fill="none" stroke="#212121" stroke-width="3" stroke-linecap="round"/>
-      <path d="M 280 250 Q 295 260 320 250" fill="none" stroke="#212121" stroke-width="3" stroke-linecap="round"/>
-      <path d="M 235 285 L 265 285 L 250 305 Z" fill="#3E2723" stroke="#3E2723" stroke-width="3" stroke-linejoin="round"/>
-      <path d="M 190 345 Q 250 325 310 345" fill="none" stroke="#3E2723" stroke-width="12" stroke-linecap="round"/>
-      <path d="M 195 345 Q 250 330 305 345" fill="none" stroke="#1A0000" stroke-width="3" stroke-linecap="round"/>
-      <g transform="translate(205, 155)"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#cyanGlow)" class="cyber-eye"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/></g>
-      <g transform="translate(295, 155)"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#cyanGlow)" class="cyber-eye"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/></g>
+      <path d="M 155 200 C 155 80, 345 80, 345 200 Z" fill="url(#helmetGrad)" stroke="#3E2723" stroke-width="3"/><line x1="155" y1="200" x2="345" y2="200" stroke="#3E2723" stroke-width="5" stroke-linecap="round"/>
+      <g><path d="M 250 100 Q 265 75 270 50" fill="none" stroke="#FF5252" stroke-width="5"/><circle cx="270" cy="50" r="10" fill="#FF5252" stroke="#3E2723"/></g>
+      <path d="M 180 250 Q 205 260 220 250" fill="none" stroke="#212121" stroke-width="3"/><path d="M 280 250 Q 295 260 320 250" fill="none" stroke="#212121" stroke-width="3"/>
+      <path d="M 235 285 L 265 285 L 250 305 Z" fill="#3E2723" stroke="#3E2723" stroke-width="3"/>
+      <path d="M 190 345 Q 250 325 310 345" fill="none" stroke="#3E2723" stroke-width="12"/><path d="M 195 345 Q 250 330 305 345" fill="none" stroke="#1A0000" stroke-width="3"/>
+      <g transform="translate(205, 155)"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#intenseCyanGlow)" class="intense-pulse"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/></g>
+      <g transform="translate(295, 155)"><circle cx="0" cy="0" r="18" fill="#00FFFF" filter="url(#intenseCyanGlow)" class="intense-pulse"/><circle cx="0" cy="0" r="18" fill="none" stroke="#2D0014" stroke-width="4"/></g>
     </g>
   </g>
 </svg>
