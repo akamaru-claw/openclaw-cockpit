@@ -1,5 +1,5 @@
 /**
- * OpenClaw Cockpit Frontend v0.2.2
+ * OpenClaw Cockpit Frontend v0.2.3
  * Streams live system metrics, service status, chat and logs to the dashboard.
  */
 
@@ -108,7 +108,10 @@ function pickLine(lines) {
 
 function updateClock() {
   const now = new Date();
-  clock.textContent = now.toLocaleTimeString('de-DE', { hour12: false });
+  const timeStr = now.toLocaleTimeString('de-DE', { hour12: false });
+  if (clock) clock.textContent = timeStr;
+  const bigClock = document.getElementById('clock');
+  if (bigClock) bigClock.textContent = timeStr;
 }
 setInterval(updateClock, 1000);
 updateClock();
