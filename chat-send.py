@@ -7,6 +7,7 @@ Usage:
 """
 import sys
 import subprocess
+import json
 
 COCKPIT_URL = "http://localhost:31337/chat"
 
@@ -15,11 +16,12 @@ def send_chat(text, sender='assistant'):
         print("No text provided")
         sys.exit(1)
     try:
+        json_data = json.dumps({"text": text, "sender": sender})
         result = subprocess.run(
             [
                 "curl", "-s", "-X", "POST",
                 "-H", "Content-Type: application/json",
-                "-d", f'{{"text":{repr(text)},"sender":"{sender}"}}',
+                "-d", json_data,
                 COCKPIT_URL
             ],
             capture_output=True,

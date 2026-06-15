@@ -8,7 +8,6 @@ const avatarState = document.getElementById('avatar-state');
 const voiceLines = document.getElementById('voice-lines');
 const terminal = document.getElementById('terminal');
 const chatStream = document.getElementById('chat-stream');
-const chatStream = document.getElementById('chat-stream');
 const clock = document.getElementById('clock');
 const hostTag = document.getElementById('host-tag');
 const footerStatus = document.getElementById('footer-status');
