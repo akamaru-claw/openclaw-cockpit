@@ -1,6 +1,6 @@
 /**
- * OpenClaw Cockpit Frontend v0.2.3
- * Streams live system metrics, service status, chat and logs to the dashboard.
+ * OpenClaw Cockpit Frontend v0.2.6
+ * Streams live system metrics, service status, chat, logs and bitcoin data to the dashboard.
  */
 
 const avatar = document.getElementById('avatar');
@@ -11,6 +11,10 @@ const chatStream = document.getElementById('chat-stream');
 const clock = document.getElementById('clock');
 const hostTag = document.getElementById('host-tag');
 const footerStatus = document.getElementById('footer-status');
+const btcPrice = document.getElementById('btc-price');
+const btcBlock = document.getElementById('btc-block');
+const moscowUsd = document.getElementById('moscow-usd');
+const moscowEur = document.getElementById('moscow-eur');
 
 const states = {
   sleeping: { label: 'AKAMARU // SLEEPING', color: '#9FA8DA', file: 'avatar-sleeping.svg' },
@@ -159,6 +163,22 @@ function updateMetrics(metrics) {
   document.getElementById('temp').textContent = metrics.temp ? metrics.temp + '°C' : '--';
 }
 
+function updateBitcoin(btc) {
+  if (!btc) return;
+  if (btcPrice && btc.price) btcPrice.textContent = `BTC $${btc.price.toLocaleString('en-US')}`;
+  if (btcBlock && btc.blockHeight) btcBlock.textContent = `BLOCK ${btc.blockHeight.toLocaleString('en-US')}`;
+  if (moscowUsd && btc.satsPerDollar) moscowUsd.textContent = `$ ${btc.satsPerDollar.toLocaleString('en-US')} sats`;
+  if (moscowEur && btc.satsPerEuro) moscowEur.textContent = `€ ${btc.satsPerEuro.toLocaleString('en-US')} sats`;
+}
+
+function updateBitcoin(btc) {
+  if (!btc) return;
+  if (btcPrice && btc.price) btcPrice.textContent = `BTC $${btc.price.toLocaleString('en-US')}`;
+  if (btcBlock && btc.blockHeight) btcBlock.textContent = `BLOCK ${btc.blockHeight.toLocaleString('en-US')}`;
+  if (moscowUsd && btc.satsPerDollar) moscowUsd.textContent = `$ ${btc.satsPerDollar.toLocaleString('en-US')} sats`;
+  if (moscowEur && btc.satsPerEuro) moscowEur.textContent = `€ ${btc.satsPerEuro.toLocaleString('en-US')} sats`;
+}
+
 function updateServices(services) {
   const list = document.getElementById('services');
   list.innerHTML = services.map(s => {
@@ -215,6 +235,7 @@ function connect() {
         if (data.metrics) updateMetrics(data.metrics);
         if (data.services) updateServices(data.services);
         if (data.openclaw) updateOpenClaw(data.openclaw);
+        if (data.bitcoin) updateBitcoin(data.bitcoin);
         if (data.log) addLogLine(data.log, 'SYS');
 
         const remoteState = data.state;

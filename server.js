@@ -140,6 +140,51 @@ async function getLogLine() {
   return `[CPU] ${topProc} | [MEM] ${topMem} | [NET] ${netConn || 'no active svc conn'} | [JOURNAL] ${latestLog} | [IO] ${ioLoad} | [USERS] ${activeUsers} | [DOCKER] ${dockerPs}`;
 }
 
+let bitcoinData = {
+  price: 0,
+  blockHeight: 0,
+  satsPerDollar: 0,
+  satsPerEuro: 0,
+  updatedAt: null
+};
+
+async function fetchJson(url, fallback) {
+  try {
+    const data = await run(`curl -sL --max-time 10 "${url}" 2>/dev/null || echo ''`);
+    if (!data) return fallback;
+    return JSON.parse(data);
+  } catch (e) {
+    return fallback;
+  }
+}
+
+async function updateBitcoinData() {
+  try {
+    const [priceUsd, priceEur, height] = await Promise.all([
+      fetchJson('https://api.coinbase.com/v2/exchange-rates?currency=BTC', null),
+      fetchJson('https://api.coinbase.com/v2/exchange-rates?currency=USD', null),
+      fetchJson('https://mempool.space/api/blocks/tip/height', 0)
+    ]);
+
+    const btcUsd = priceUsd?.data?.rates?.USD;
+    const usdEur = priceEur?.data?.rates?.EUR;
+    const btcEur = btcUsd && usdEur ? (parseFloat(btcUsd) / parseFloat(usdEur)) : null;
+
+    bitcoinData = {
+      price: btcUsd ? parseFloat(btcUsd) : 0,
+      blockHeight: height ? parseInt(height, 10) : 0,
+      satsPerDollar: btcUsd ? Math.round(100000000 / parseFloat(btcUsd)) : 0,
+      satsPerEuro: btcEur ? Math.round(100000000 / btcEur) : 0,
+      updatedAt: new Date().toISOString()
+    };
+  } catch (e) {
+    console.error('Bitcoin data update failed:', e.message);
+  }
+}
+
+updateBitcoinData();
+setInterval(updateBitcoinData, 60000);
+
 async function broadcast() {
   const payload = {
     type: 'tick',
@@ -148,7 +193,8 @@ async function broadcast() {
     metrics: await getMetrics(),
     services: await getServices(),
     openclaw: await getOpenClawInfo(),
-    log: await getLogLine()
+    log: await getLogLine(),
+    bitcoin: bitcoinData
   };
 
   const data = `data: ${JSON.stringify(payload)}\n\n`;
