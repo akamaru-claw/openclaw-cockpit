@@ -7,6 +7,8 @@ const avatar = document.getElementById('avatar');
 const avatarState = document.getElementById('avatar-state');
 const voiceLines = document.getElementById('voice-lines');
 const terminal = document.getElementById('terminal');
+const chatStream = document.getElementById('chat-stream');
+const chatStream = document.getElementById('chat-stream');
 const clock = document.getElementById('clock');
 const hostTag = document.getElementById('host-tag');
 const footerStatus = document.getElementById('footer-status');
@@ -112,16 +114,23 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
-function log(msg, tag = 'INFO') {
-  const line = document.createElement('div');
-  line.className = 'line';
-  const ts = new Date().toLocaleTimeString('de-DE', { hour12: false });
-  line.innerHTML = `<span class="ts">[${ts}]</span><span class="tag">${tag}</span>${escapeHtml(msg)}`;
-  terminal.appendChild(line);
-  if (terminal.children.length > 50) {
-    terminal.removeChild(terminal.firstChild);
+function addChatMessage(text, sender = 'assistant') {
+  if (!chatStream) return;
+  const msg = document.createElement('div');
+  msg.className = `chat-msg ${sender}`;
+  const ts = new Date().toLocaleTimeString('de-DE', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  const label = sender === 'user' ? 'KIBA' : 'AKAMARU';
+  msg.innerHTML = `<div class="msg-header">${label} // ${ts}</div><div class="msg-text">${escapeHtml(text)}</div>`;
+  chatStream.appendChild(msg);
+  while (chatStream.children.length > 100) {
+    chatStream.removeChild(chatStream.firstChild);
   }
-  terminal.scrollTop = terminal.scrollHeight;
+  chatStream.scrollTop = chatStream.scrollHeight;
+}
+
+function log(msg, tag = 'INFO') {
+  const ts = new Date().toLocaleTimeString('de-DE', { hour12: false });
+  console.log(`[${ts}] ${tag}: ${msg}`);
 }
 
 function escapeHtml(text) {
@@ -171,6 +180,7 @@ function connect() {
     footerStatus.textContent = 'connection: live stream active';
     footerStatus.style.color = '#05ffa1';
     log('Live stream verbunden.', 'NET');
+    addChatMessage('Cockpit verbunden. Warte auf Input...', 'assistant');
   };
 
   source.onmessage = (event) => {
@@ -179,13 +189,16 @@ function connect() {
       updateMetrics(data.metrics);
       updateServices(data.services);
       updateOpenClaw(data.openclaw);
-      log(data.log || 'System tick received', 'SYS');
 
       const remoteState = data.state;
       const localState = detectLocalState(data.metrics, data.services, data.log);
-      const nextState = remoteState && remoteState !== 'idle' ? remoteState : (localState || 'idle');
+      const nextState = remoteState || localState || 'idle';
       if (nextState !== currentState) {
         setAvatarState(nextState);
+      }
+
+      if (data.chatMessage) {
+        addChatMessage(data.chatMessage.text, data.chatMessage.sender);
       }
     }
   };

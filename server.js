@@ -10,6 +10,49 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 31337;
 
+const CHAT_FILE = path.join(__dirname, 'chat.json');
+const MAX_CHAT_HISTORY = 50;
+
+function readChatHistory() {
+  try {
+    if (fs.existsSync(CHAT_FILE)) {
+      return JSON.parse(fs.readFileSync(CHAT_FILE, 'utf8'));
+    }
+  } catch (e) {
+    // ignore
+  }
+  return [];
+}
+
+function addChatMessage(text, sender = 'assistant') {
+  const history = readChatHistory();
+  const entry = {
+    id: Date.now().toString(),
+    text: text.slice(0, 2000),
+    sender,
+    ts: new Date().toISOString()
+  };
+  history.push(entry);
+  while (history.length > MAX_CHAT_HISTORY) {
+    history.shift();
+  }
+  try {
+    fs.writeFileSync(CHAT_FILE, JSON.stringify(history));
+  } catch (e) {
+    console.error('Failed to write chat history:', e.message);
+  }
+  return entry;
+}
+
+function broadcastChatMessage(entry) {
+  const data = `data: ${JSON.stringify({ type: 'tick', chatMessage: entry }) }\n\n`;
+  for (const res of clients) {
+    res.write(data);
+  }
+}
+
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const clients = new Set();
@@ -126,6 +169,20 @@ app.get('/set-state', (req, res) => {
   }
 });
 
+app.post('/chat', (req, res) => {
+  const { text, sender } = req.body;
+  if (!text || typeof text !== 'string') {
+    return res.status(400).json({ error: 'text required' });
+  }
+  const entry = addChatMessage(text, sender === 'user' ? 'user' : 'assistant');
+  broadcastChatMessage(entry);
+  res.json({ ok: true, id: entry.id });
+});
+
+app.get('/chat', (req, res) => {
+  res.json(readChatHistory());
+});
+
 app.get('/stream', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -133,6 +190,12 @@ app.get('/stream', (req, res) => {
   res.flushHeaders();
   clients.add(res);
   res.write(`data: ${JSON.stringify({ type: 'connected' })}\n\n`);
+
+  // Send recent chat history on connect
+  const history = readChatHistory();
+  for (const entry of history.slice(-20)) {
+    res.write(`data: ${JSON.stringify({ type: 'tick', chatMessage: entry })}\n\n`);
+  }
 
   req.on('close', () => {
     clients.delete(res);
