@@ -163,9 +163,9 @@ body {
 }
 
 .chat-panel {
-  grid-column: span 2;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .chat-stream {
@@ -218,6 +218,29 @@ body {
   word-break: break-word;
 }
 
+.log-panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.log-panel .terminal {
+  height: calc(100% - 2.5rem);
+  overflow-y: auto;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  color: var(--text-dim);
+}
+
+.terminal .line {
+  margin-bottom: 0.2rem;
+  border-left: 2px solid var(--border);
+  padding-left: 0.4rem;
+}
+
+.terminal .line .ts { color: var(--accent-orange); margin-right: 0.4rem; font-size: 0.6rem; }
+.terminal .line .tag { color: var(--accent-cyan); margin-right: 0.4rem; font-size: 0.6rem; }
+
 .panel-title {
   margin: 0 0 1rem 0;
   font-size: 0.8rem;
@@ -251,19 +274,6 @@ body {
 
 .oc-info .metric { display: flex; justify-content: space-between; }
 
-.log-panel { display: none; }
-
-.terminal {
-  height: calc(100% - 3rem);
-  overflow-y: auto;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  color: var(--text-dim);
-}
-.terminal .line { margin-bottom: 0.25rem; }
-.terminal .line .ts { color: var(--accent-orange); margin-right: 0.5rem; }
-.terminal .line .tag { color: var(--accent-cyan); margin-right: 0.5rem; }
-
 .version { color: var(--text-dim); }
 
 @keyframes pulse {
@@ -281,4 +291,5 @@ body {
   .wide { grid-column: span 1; }
   .avatar-panel { grid-row: span 1; }
   .chat-panel { grid-column: span 1; }
+  .log-panel { grid-column: span 1; }
 }

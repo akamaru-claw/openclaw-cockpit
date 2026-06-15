@@ -1,6 +1,6 @@
 /**
- * OpenClaw Cockpit Frontend
- * Connects to /stream SSE endpoint and updates the dashboard in real-time.
+ * OpenClaw Cockpit Frontend v0.2.2
+ * Streams live system metrics, service status, chat and logs to the dashboard.
  */
 
 const avatar = document.getElementById('avatar');
@@ -91,7 +91,7 @@ function setAvatarState(state) {
   avatarState.style.color = cfg.color;
   avatarState.style.textShadow = `0 0 12px ${cfg.color}`;
   avatar.setAttribute('data', cfg.file);
-  log(`State switched: ${state}`, 'STATE');
+  addLogLine(`State switched: ${state}`, 'STATE');
 }
 
 function whenAvatarReady(fn) {
@@ -113,6 +113,12 @@ function updateClock() {
 setInterval(updateClock, 1000);
 updateClock();
 
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 function addChatMessage(text, sender = 'assistant') {
   if (!chatStream) return;
   const msg = document.createElement('div');
@@ -127,15 +133,18 @@ function addChatMessage(text, sender = 'assistant') {
   chatStream.scrollTop = chatStream.scrollHeight;
 }
 
-function log(msg, tag = 'INFO') {
+function addLogLine(msg, tag = 'INFO') {
+  const line = document.createElement('div');
+  line.className = 'line';
   const ts = new Date().toLocaleTimeString('de-DE', { hour12: false });
-  console.log(`[${ts}] ${tag}: ${msg}`);
-}
-
-function escapeHtml(text) {
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
+  line.innerHTML = `<span class="ts">[${ts}]</span><span class="tag">${tag}</span>${escapeHtml(msg)}`;
+  if (terminal) {
+    terminal.appendChild(line);
+    if (terminal.children.length > 60) {
+      terminal.removeChild(terminal.firstChild);
+    }
+    terminal.scrollTop = terminal.scrollHeight;
+  }
 }
 
 function updateMetrics(metrics) {
@@ -161,9 +170,9 @@ function updateOpenClaw(info) {
   document.getElementById('oc-status').textContent = info.status.toUpperCase();
 }
 
-function detectLocalState(metrics, services, log) {
+function detectLocalState(metrics, services, logLine) {
   const downCount = services.filter(s => s.status === 'down').length;
-  const logText = log || '';
+  const logText = logLine || '';
   if (downCount > 2) return 'error';
   if (logText.includes('cron') || logText.includes('Cron')) return 'cron';
   if (logText.includes('Tool:') || logText.includes('exec') || logText.includes('working')) return 'working';
@@ -172,33 +181,52 @@ function detectLocalState(metrics, services, log) {
   return null;
 }
 
+async function loadChatHistory() {
+  try {
+    const res = await fetch('/chat');
+    if (!res.ok) return;
+    const history = await res.json();
+    if (chatStream) chatStream.innerHTML = '';
+    for (const entry of history.slice(-50)) {
+      addChatMessage(entry.text, entry.sender);
+    }
+    addLogLine(`Chat history loaded: ${history.length} messages`, 'CHAT');
+  } catch (e) {
+    addLogLine(`Failed to load chat history: ${e.message}`, 'ERR');
+  }
+}
+
 function connect() {
   const source = new EventSource('/stream');
 
   source.onopen = () => {
     footerStatus.textContent = 'connection: live stream active';
     footerStatus.style.color = '#05ffa1';
-    log('Live stream verbunden.', 'NET');
-    addChatMessage('Cockpit verbunden. Warte auf Input...', 'assistant');
+    addLogLine('Live stream verbunden.', 'NET');
   };
 
   source.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    if (data.type === 'tick') {
-      updateMetrics(data.metrics);
-      updateServices(data.services);
-      updateOpenClaw(data.openclaw);
+    try {
+      const data = JSON.parse(event.data);
+      if (data.type === 'tick') {
+        if (data.metrics) updateMetrics(data.metrics);
+        if (data.services) updateServices(data.services);
+        if (data.openclaw) updateOpenClaw(data.openclaw);
+        if (data.log) addLogLine(data.log, 'SYS');
 
-      const remoteState = data.state;
-      const localState = detectLocalState(data.metrics, data.services, data.log);
-      const nextState = remoteState || localState || 'idle';
-      if (nextState !== currentState) {
-        setAvatarState(nextState);
-      }
+        const remoteState = data.state;
+        const localState = detectLocalState(data.metrics || {}, data.services || [], data.log);
+        const nextState = remoteState || localState || 'idle';
+        if (nextState !== currentState) {
+          setAvatarState(nextState);
+        }
 
-      if (data.chatMessage) {
-        addChatMessage(data.chatMessage.text, data.chatMessage.sender);
+        if (data.chatMessage) {
+          addChatMessage(data.chatMessage.text, data.chatMessage.sender);
+        }
       }
+    } catch (e) {
+      addLogLine(`SSE parse error: ${e.message}`, 'ERR');
     }
   };
 
@@ -241,6 +269,9 @@ hostTag.textContent = 'host: ' + (window.location.hostname || 'unknown');
 
 // Start
 whenAvatarReady(() => {
-  connect();
-  setAvatarState('idle');
+  loadChatHistory().then(() => {
+    connect();
+    setAvatarState('idle');
+    addChatMessage('Cockpit verbunden. Warte auf Input...', 'assistant');
+  });
 });
