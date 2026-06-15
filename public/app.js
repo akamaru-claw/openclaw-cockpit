@@ -1,5 +1,5 @@
 /**
- * OpenClaw Cockpit Frontend v0.2.8
+ * OpenClaw Cockpit Frontend v0.3.2
  * Streams live system metrics, service status, chat, logs, bitcoin and real-life data to the dashboard.
  */
 
@@ -17,14 +17,14 @@ const moscowUsd = document.getElementById('moscow-usd');
 const moscowEur = document.getElementById('moscow-eur');
 
 const states = {
-  sleeping: { label: 'AKAMARU // SLEEPING', color: '#9FA8DA', file: 'avatar-sleeping.svg' },
-  idle: { label: 'AKAMARU // IDLE', color: '#00FFFF', file: 'avatar-idle.svg' },
-  reading: { label: 'AKAMARU // READING', color: '#00FFFF', file: 'avatar-reading.svg' },
-  thinking: { label: 'AKAMARU // THINKING', color: '#E040FB', file: 'avatar-thinking.svg' },
-  working: { label: 'AKAMARU // WORKING', color: '#FF5252', file: 'avatar-working.svg' },
-  cron: { label: 'AKAMARU // CRON', color: '#FFD700', file: 'avatar-cron.svg' },
-  done: { label: 'AKAMARU // DONE', color: '#FF4081', file: 'avatar-done.svg' },
-  error: { label: 'AKAMARU // ERROR', color: '#FF2A2A', file: 'avatar-error.svg' }
+  sleeping: { label: 'AKAMARU // SLEEPING', color: '#991b1b', file: 'avatar-sleeping.svg' },
+  idle: { label: 'AKAMARU // IDLE', color: '#ef4444', file: 'avatar-idle.svg' },
+  reading: { label: 'AKAMARU // READING', color: '#f7931a', file: 'avatar-reading.svg' },
+  thinking: { label: 'AKAMARU // THINKING', color: '#a855f7', file: 'avatar-thinking.svg' },
+  working: { label: 'AKAMARU // WORKING', color: '#ff3333', file: 'avatar-working.svg' },
+  cron: { label: 'AKAMARU // CRON', color: '#c084fc', file: 'avatar-cron.svg' },
+  done: { label: 'AKAMARU // DONE', color: '#22c55e', file: 'avatar-done.svg' },
+  error: { label: 'AKAMARU // ERROR', color: '#ff0000', file: 'avatar-error.svg' }
 };
 
 const idleLines = [
