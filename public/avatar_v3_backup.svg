@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" id="akamaru-avatar">
+  <defs>
+    <radialGradient id="spaceGradient" cx="50%" cy="50%" r="80%">
+      <stop offset="0%" stop-color="#C2185B" />
+      <stop offset="20%" stop-color="#DC143C" />
+      <stop offset="50%" stop-color="#5a0010" />
+      <stop offset="100%" stop-color="#050000" />
+    </radialGradient>
+    <linearGradient id="furOuter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E64A19" />
+      <stop offset="40%" stop-color="#D84315" />
+      <stop offset="100%" stop-color="#8B0000" />
+    </linearGradient>
+    <linearGradient id="earInner" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFF8F0" />
+      <stop offset="100%" stop-color="#FFE4E1" />
+    </linearGradient>
+    <linearGradient id="helmetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7f0000" />
+      <stop offset="50%" stop-color="#B71C1C" />
+      <stop offset="100%" stop-color="#3d0000" />
+    </linearGradient>
+    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00FFFF" />
+      <stop offset="50%" stop-color="#00CED1" />
+      <stop offset="100%" stop-color="#00FFFF" stop-opacity="0" />
+    </radialGradient>
+    <filter id="bloom" x="-150%" y="-150%" width="400%" height="400%">
+      <feGaussianBlur stdDeviation="20" result="blur1" />
+      <feGaussianBlur stdDeviation="8" result="blur2" />
+      <feMerge>
+        <feMergeNode in="blur1" />
+        <feMergeNode in="blur2" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    .head-group { animation: breathe 4s ease-in-out infinite; transform-origin: 250px 250px; }
+    .chest { animation: breatheChest 4s ease-in-out infinite; transform-origin: 250px 385px; }
+    .ear-left { animation: earTwitchLeft 8s ease-in-out infinite; transform-origin: 130px 215px; }
+    .ear-right { animation: earTwitchRight 7s ease-in-out infinite; transform-origin: 370px 215px; }
+    .antenna-stem { animation: antennaWobble 3s ease-in-out infinite; transform-origin: 250px 140px; }
+    .antenna-ball { animation: antennaGlow 2s ease-in-out infinite alternate; }
+    .eye-glow { animation: eyePulse 2.5s ease-in-out infinite alternate; }
+    .tail { animation: tailWag 5s ease-in-out infinite; transform-origin: 370px 360px; }
+    .stars-a { animation: twinkleA 2.5s ease-in-out infinite alternate; }
+    .stars-b { animation: twinkleB 3.5s ease-in-out infinite alternate; }
+    .stars-c { animation: twinkleC 4.5s ease-in-out infinite alternate; }
+    .nebula { animation: nebulaShift 20s ease-in-out infinite alternate; }
+
+    @keyframes breathe { 0%, 100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(1.015) translateY(-2px); } }
+    @keyframes breatheChest { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.03); } }
+    @keyframes earTwitchLeft { 0%, 90%, 100% { transform: rotate(0deg); } 95% { transform: rotate(-5deg); } }
+    @keyframes earTwitchRight { 0%, 85%, 100% { transform: rotate(0deg); } 90% { transform: rotate(5deg); } }
+    @keyframes antennaWobble { 0%, 100% { transform: rotate(0deg); } 33% { transform: rotate(4deg); } 66% { transform: rotate(-3deg); } }
+    @keyframes antennaGlow { 0% { opacity: 0.7; } 100% { opacity: 1; } }
+    @keyframes eyePulse { 0% { opacity: 0.6; filter: blur(0px); } 100% { opacity: 1; filter: blur(1px); } }
+    @keyframes tailWag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-7deg); } }
+    @keyframes twinkleA { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+    @keyframes twinkleB { 0% { opacity: 0.2; } 100% { opacity: 0.9; } }
+    @keyframes twinkleC { 0% { opacity: 0.4; } 100% { opacity: 1; } }
+    @keyframes nebulaShift { 0% { transform: translate(0,0); } 100% { transform: translate(-10px,-5px); } }
+  </style>
+
+  <rect width="500" height="500" fill="url(#spaceGradient)" />
+
+  <g class="nebula" opacity="0.6">
+    <ellipse cx="120" cy="100" rx="180" ry="120" fill="#7a0015" opacity="0.3" filter="url(#softGlow)" />
+    <ellipse cx="380" cy="420" rx="200" ry="140" fill="#4a0010" opacity="0.25" filter="url(#softGlow)" />
+    <ellipse cx="420" cy="120" rx="140" ry="100" fill="#9e1034" opacity="0.2" filter="url(#softGlow)" />
+    <ellipse cx="80" cy="380" rx="160" ry="110" fill="#6a0012" opacity="0.25" filter="url(#softGlow)" />
+  </g>
+
+  <g class="stars-a" fill="#FFF" opacity="0.8">
+    <circle cx="45" cy="65" r="1.2" opacity="0.7" />
+    <circle cx="110" cy="35" r="0.8" opacity="0.5" />
+    <circle cx="410" cy="55" r="1.6" opacity="0.9" />
+    <circle cx="460" cy="145" r="0.9" opacity="0.6" />
+    <circle cx="75" cy="185" r="1.1" opacity="0.8" />
+    <circle cx="440" cy="255" r="0.7" opacity="0.5" />
+    <circle cx="55" cy="325" r="1.3" opacity="0.9" />
+    <circle cx="450" cy="390" r="1.0" opacity="0.7" />
+    <circle cx="95" cy="440" r="0.8" opacity="0.5" />
+    <circle cx="390" cy="460" r="1.2" opacity="0.8" />
+  </g>
+  <g class="stars-b" fill="#FFE4E1" opacity="0.7">
+    <circle cx="210" cy="25" r="0.9" opacity="0.6" />
+    <circle cx="330" cy="115" r="1.0" opacity="0.7" />
+    <circle cx="35" cy="245" r="0.8" opacity="0.5" />
+    <circle cx="480" cy="35" r="1.0" opacity="0.8" />
+    <circle cx="260" cy="475" r="0.9" opacity="0.6" />
+    <circle cx="150" cy="150" r="0.6" opacity="0.5" />
+    <circle cx="360" cy="200" r="0.7" opacity="0.6" />
+    <circle cx="180" cy="410" r="0.8" opacity="0.7" />
+  </g>
+  <g class="stars-c" fill="#FFF" opacity="0.9">
+    <circle cx="300" cy="60" r="1.1" opacity="0.8" />
+    <circle cx="70" cy="90" r="0.9" opacity="0.7" />
+    <circle cx="430" cy="300" r="1.0" opacity="0.8" />
+    <circle cx="120" cy="350" r="0.7" opacity="0.5" />
+    <circle cx="320" cy="430" r="1.2" opacity="0.9" />
+    <circle cx="250" cy="250" r="0.5" opacity="0.4" />
+  </g>
+
+  <g class="tail">
+    <path d="M 360 360 C 390 340, 420 310, 440 320 C 450 325, 445 345, 435 355 C 440 370, 455 380, 445 400 C 435 420, 425 430, 430 455" 
+          fill="#D84315" stroke="#3E2723" stroke-width="3" stroke-linejoin="round" />
+    <path d="M 410 328 Q 418 340 410 355 M 430 350 Q 438 365 430 380 M 422 390 Q 430 405 422 420" 
+          fill="none" stroke="#6a0012" stroke-width="3" stroke-linecap="round" />
+  </g>
+
+  <g class="head-group">
+    <path class="ear-left" d="M 130 215 C 95 230, 80 295, 95 350 C 105 385, 140 375, 155 335 C 165 295, 160 245, 145 215 Z" 
+          fill="url(#furOuter)" stroke="#3E2723" stroke-width="3" />
+    <path d="M 130 230 C 110 250, 105 295, 115 335 C 125 355, 145 345, 150 315" 
+          fill="url(#earInner)" opacity="0.95" />
+    
+    <path class="ear-right" d="M 370 215 C 405 230, 420 295, 405 350 C 395 385, 360 375, 345 335 C 335 295, 340 245, 355 215 Z" 
+          fill="url(#furOuter)" stroke="#3E2723" stroke-width="3" />
+    <path d="M 370 230 C 390 250, 395 295, 385 335 C 375 355, 355 345, 350 315" 
+          fill="url(#earInner)" opacity="0.95" />
+
+    <path d="M 170 225 C 170 165, 205 125, 250 125 C 295 125, 330 165, 330 225 L 330 235 L 170 235 Z" 
+          fill="url(#helmetGradient)" stroke="#3E2723" stroke-width="3" />
+    <path d="M 170 225 L 330 225" fill="none" stroke="#3E2723" stroke-width="3" />
+    <path d="M 175 210 C 210 195, 290 195, 325 210" fill="none" stroke="#E64A19" stroke-width="2" opacity="0.5" />
+    <path d="M 315 190 L 340 165 L 330 205 Z" fill="#D84315" stroke="#3E2723" stroke-width="2" />
+
+    <g class="antenna-stem">
+      <path d="M 250 145 Q 262 120, 280 105" fill="none" stroke="#3E2723" stroke-width="4" stroke-linecap="round" />
+      <circle class="antenna-ball" cx="280" cy="100" r="14" fill="#00FFFF" filter="url(#bloom)" />
+    </g>
+
+    <path d="M 170 235 C 155 240, 150 285, 160 330 C 170 370, 200 390, 250 390 C 300 390, 330 370, 340 330 C 350 285, 345 240, 330 235 Z" 
+          fill="#FDF5E6" stroke="#3E2723" stroke-width="3" />
+    
+    <path d="M 180 350 C 200 375, 230 380, 250 380 C 270 380, 300 375, 320 350" 
+          fill="#D84315" opacity="0.08" />
+
+    <g stroke="#3E2723" stroke-width="3" fill="none" stroke-linecap="round">
+      <path d="M 190 270 Q 215 278 240 270" />
+      <path d="M 260 270 Q 285 278 310 270" />
+    </g>
+
+    <ellipse cx="250" cy="335" rx="70" ry="45" fill="#FDF5E6" stroke="#3E2723" stroke-width="2" />
+    <path d="M 230 325 Q 250 315 270 325 Q 250 350 230 325" fill="#3E2723" />
+    <path d="M 215 352 Q 250 363 285 352" fill="none" stroke="#3E2723" stroke-width="3" stroke-linecap="round" />
+    
+    <path d="M 235 370 L 245 395 L 252 380 L 259 395 L 265 370" 
+          fill="#FDF5E6" stroke="#3E2723" stroke-width="2.5" stroke-linejoin="round" />
+    
+    <g class="chest">
+      <path d="M 215 388 L 227 415 L 239 395 L 251 420 L 263 395 L 275 415 L 285 388" 
+            fill="#FDF5E6" stroke="#3E2723" stroke-width="2.5" stroke-linejoin="round" />
+    </g>
+
+    <g class="eye-glow">
+      <circle cx="205" cy="190" r="22" fill="#0a0000" />
+      <circle cx="205" cy="190" r="22" fill="url(#eyeGlow)" opacity="0.85" filter="url(#bloom)" />
+      <circle cx="295" cy="190" r="22" fill="#0a0000" />
+      <circle cx="295" cy="190" r="22" fill="url(#eyeGlow)" opacity="0.85" filter="url(#bloom)" />
+    </g>
+  </g>
+</svg>
