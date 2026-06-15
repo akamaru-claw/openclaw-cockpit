@@ -74,7 +74,16 @@ python3 state-controller.py idle
 
 ## 4. Create a systemd user service
 
-Create `~/.config/systemd/user/cockpit-server.service`:
+Copy the provided example file and adjust the paths to your local clone:
+
+```bash
+mkdir -p ~/.config/systemd/user
+cp systemd/cockpit-server.service.example ~/.config/systemd/user/cockpit-server.service
+# edit the path inside the unit file if you did not clone to ~/openclaw-cockpit
+nano ~/.config/systemd/user/cockpit-server.service
+```
+
+Example unit contents:
 
 ```ini
 [Unit]
@@ -84,7 +93,7 @@ After=graphical-session.target
 [Service]
 Type=simple
 WorkingDirectory=%h/openclaw-cockpit
-ExecStart=/usr/bin/node server.js
+ExecStart=/usr/bin/node %h/openclaw-cockpit/server.js
 Restart=no
 Environment="HOME=%h"
 

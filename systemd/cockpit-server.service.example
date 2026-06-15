@@ -1,0 +1,14 @@
+[Unit]
+Description=OpenClaw Cockpit Server
+After=graphical-session.target
+
+[Service]
+Type=simple
+# Replace %h/openclaw-cockpit with the actual path where you cloned the repo.
+WorkingDirectory=%h/openclaw-cockpit
+ExecStart=/usr/bin/node %h/openclaw-cockpit/server.js
+Restart=no
+Environment="HOME=%h"
+
+[Install]
+WantedBy=default.target
