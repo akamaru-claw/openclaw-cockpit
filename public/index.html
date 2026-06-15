@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OPENCLAW COCKPIT</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="theme-cyber">
+  <div class="crt-overlay"></div>
+
+  <header class="top-bar">
+    <div class="brand">
+      <span class="logo-icon">◈</span>
+      <span class="logo-text">OPENCLAW <span class="dim">COCKPIT</span></span>
+    </div>
+    <div class="system-clock" id="clock">--:--:--</div>
+    <div class="host-tag" id="host-tag">host: unknown</div>
+  </header>
+
+  <main class="dashboard">
+    <section class="panel avatar-panel">
+      <div class="avatar-stage">
+        <object id="avatar" data="avatar.svg" type="image/svg+xml" role="img" aria-label="Akamaru Avatar"></object>
+        <div class="avatar-state" id="avatar-state">AKAMARU // IDLE</div>
+      </div>
+      <div class="voice-lines" id="voice-lines"></div>
+    </section>
+
+    <section class="panel metrics-panel">
+      <h2 class="panel-title"><span class="blink">▸</span> SYSTEM METRICS</h2>
+      <div class="metric-grid" id="metrics">
+        <div class="metric"><span class="label">CPU</span><span class="value" id="cpu">--%</span></div>
+        <div class="metric"><span class="label">RAM</span><span class="value" id="ram">--%</span></div>
+        <div class="metric"><span class="label">DISK</span><span class="value" id="disk">--%</span></div>
+        <div class="metric"><span class="label">UPTIME</span><span class="value" id="uptime">--</span></div>
+        <div class="metric"><span class="label">LOAD</span><span class="value" id="load">--</span></div>
+        <div class="metric"><span class="label">TEMP</span><span class="value" id="temp">--°C</span></div>
+      </div>
+    </section>
+
+    <section class="panel services-panel">
+      <h2 class="panel-title">ACTIVE SERVICES</h2>
+      <ul class="service-list" id="services"></ul>
+    </section>
+
+    <section class="panel openclaw-panel">
+      <h2 class="panel-title">OPENCLAW NODE</h2>
+      <div class="oc-info">
+        <div class="metric"><span class="label">MODEL</span><span class="value" id="oc-model">--</span></div>
+        <div class="metric"><span class="label">SESSION</span><span class="value" id="oc-session">--</span></div>
+        <div class="metric"><span class="label">STATUS</span><span class="value" id="oc-status">--</span></div>
+      </div>
+    </section>
+
+    <section class="panel log-panel wide">
+      <h2 class="panel-title">LIVE LOG STREAM</h2>
+      <div class="terminal" id="terminal"></div>
+    </section>
+  </main>
+
+  <footer class="bottom-bar">
+    <span id="footer-status">connection: establishing...</span>
+    <span class="version">v0.1.0-alpha</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

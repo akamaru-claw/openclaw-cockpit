@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" id="akamaru-avatar">
+  <defs>
+    <linearGradient id="furGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f7931a" />
+      <stop offset="50%" stop-color="#ffae42" />
+      <stop offset="100%" stop-color="#c46200" />
+    </linearGradient>
+    <linearGradient id="eyeGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00f0ff" />
+      <stop offset="100%" stop-color="#0066ff" />
+    </linearGradient>
+    <linearGradient id="circuitGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f0ff" stop-opacity="0" />
+      <stop offset="50%" stop-color="#00f0ff" />
+      <stop offset="100%" stop-color="#00f0ff" stop-opacity="0" />
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+    <filter id="strongGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="12" result="coloredBlur" />
+      <feMerge>
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="coloredBlur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <style>
+    .hud-ring-slow { animation: rotate 20s linear infinite; transform-origin: center; }
+    .hud-ring-fast { animation: rotate 4s linear infinite reverse; transform-origin: center; }
+    .circuits { animation: pulseOpacity 3s ease-in-out infinite; }
+    .head-group { animation: breathe 4s ease-in-out infinite; transform-origin: center; }
+    .eye-left, .eye-right { animation: blinkEye 5s infinite; }
+    .ear-left { animation: twitch 6s ease-in-out infinite; transform-origin: 120px 160px; }
+    .ear-right { animation: twitch 6s ease-in-out infinite reverse; transform-origin: 280px 160px; }
+    .status-ring { animation: dash 3s linear infinite; transform-origin: center; }
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes pulseOpacity { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+    @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.015); } }
+    @keyframes blinkEye { 0%, 96%, 100% { transform: scaleY(1); } 98% { transform: scaleY(0.1); } }
+    @keyframes twitch { 0%, 90%, 100% { transform: rotate(0deg); } 95% { transform: rotate(-3deg); } }
+    @keyframes dash { 0% { stroke-dasharray: 0 753; } 50% { stroke-dasharray: 376 377; } 100% { stroke-dasharray: 753 0; } }
+  </style>
+
+  <!-- Outer HUD ring -->
+  <circle cx="200" cy="200" r="190" fill="none" stroke="#00f0ff" stroke-width="1" stroke-opacity="0.3" class="hud-ring-slow" />
+  <circle cx="200" cy="200" r="175" fill="none" stroke="#f7931a" stroke-width="2" stroke-opacity="0.4" stroke-dasharray="20 40" class="hud-ring-fast" />
+  <circle cx="200" cy="200" r="150" fill="none" stroke="#00f0ff" stroke-width="0.5" stroke-opacity="0.2" />
+
+  <!-- Circuit patterns around head -->
+  <g class="circuits" stroke="url(#circuitGradient)" stroke-width="1.5" fill="none" opacity="0.6">
+    <path d="M 50 200 L 80 200 L 95 170 M 80 200 L 95 230" />
+    <path d="M 350 200 L 320 200 L 305 170 M 320 200 L 305 230" />
+    <path d="M 200 30 L 200 60 L 170 75 M 200 60 L 230 75" />
+    <path d="M 200 370 L 200 340 L 170 325 M 200 340 L 230 325" />
+    <circle cx="95" cy="170" r="3" fill="#00f0ff" />
+    <circle cx="95" cy="230" r="3" fill="#00f0ff" />
+    <circle cx="305" cy="170" r="3" fill="#00f0ff" />
+    <circle cx="305" cy="230" r="3" fill="#00f0ff" />
+    <circle cx="170" cy="75" r="3" fill="#00f0ff" />
+    <circle cx="230" cy="75" r="3" fill="#00f0ff" />
+    <circle cx="170" cy="325" r="3" fill="#00f0ff" />
+    <circle cx="230" cy="325" r="3" fill="#00f0ff" />
+  </g>
+
+  <!-- Main head shape: stylized wolf/dog -->
+  <g class="head-group" filter="url(#glow)">
+    <!-- Ears -->
+    <polygon points="120,160 95,70 160,120" fill="url(#furGradient)" class="ear-left" />
+    <polygon points="280,160 305,70 240,120" fill="url(#furGradient)" class="ear-right" />
+    <!-- Inner ear glow -->
+    <polygon points="125,150 110,95 150,125" fill="#2a0a00" opacity="0.6" />
+    <polygon points="275,150 290,95 250,125" fill="#2a0a00" opacity="0.6" />
+
+    <!-- Face base -->
+    <path d="M 120 160 Q 200 110 280 160 L 290 240 Q 295 295 200 315 Q 105 295 110 240 Z" fill="url(#furGradient)" />
+
+    <!-- Snout -->
+    <ellipse cx="200" cy="250" rx="55" ry="40" fill="#ffcd94" />
+    <!-- Nose -->
+    <path d="M 185 245 Q 200 235 215 245 Q 200 265 185 245" fill="#1a1a1a" />
+
+    <!-- Eyes -->
+    <g class="eyes">
+      <ellipse cx="155" cy="195" rx="28" ry="22" fill="#1a1a1a" />
+      <ellipse cx="245" cy="195" rx="28" ry="22" fill="#1a1a1a" />
+      <circle cx="155" cy="195" r="18" fill="url(#eyeGradient)" class="eye-left" filter="url(#strongGlow)" />
+      <circle cx="245" cy="195" r="18" fill="url(#eyeGradient)" class="eye-right" filter="url(#strongGlow)" />
+      <circle cx="160" cy="190" r="5" fill="#ffffff" opacity="0.8" />
+      <circle cx="250" cy="190" r="5" fill="#ffffff" opacity="0.8" />
+    </g>
+
+    <!-- Eyebrows / expression lines -->
+    <path d="M 130 165 Q 155 155 180 165" stroke="#1a1a1a" stroke-width="3" fill="none" class="brow-left" />
+    <path d="M 220 165 Q 245 155 270 165" stroke="#1a1a1a" stroke-width="3" fill="none" class="brow-right" />
+
+    <!-- Mouth -->
+    <path d="M 175 275 Q 200 285 225 275" stroke="#1a1a1a" stroke-width="3" fill="none" class="mouth" />
+
+    <!-- Circuit markings on face -->
+    <path d="M 140 240 L 160 260 M 260 240 L 240 260" stroke="#00f0ff" stroke-width="1.5" stroke-opacity="0.5" fill="none" />
+    <circle cx="160" cy="260" r="2" fill="#00f0ff" />
+    <circle cx="240" cy="260" r="2" fill="#00f0ff" />
+  </g>
+
+  <!-- Status indicator ring -->
+  <circle cx="200" cy="200" r="120" fill="none" stroke="#00f0ff" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 753" class="status-ring" filter="url(#glow)" />
+
+  <!-- Bottom label -->
+  <text x="200" y="375" text-anchor="middle" fill="#00f0ff" font-family="monospace" font-size="14" letter-spacing="2" class="status-label" filter="url(#glow)">AKAMARU</text>
+</svg>
