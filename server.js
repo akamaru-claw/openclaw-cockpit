@@ -113,9 +113,9 @@ app.get('/state', (req, res) => {
 });
 
 app.get('/set-state', (req, res) => {
-  const allowed = ['idle', 'thinking', 'working', 'success', 'error', 'sleeping'];
+  const ALLOWED_STATES = ['idle', 'reading', 'thinking', 'working', 'cron', 'done', 'error', 'sleeping'];
   const state = req.query.state;
-  if (!allowed.includes(state)) {
+  if (!ALLOWED_STATES.includes(state)) {
     return res.status(400).json({ error: 'invalid state' });
   }
   try {
