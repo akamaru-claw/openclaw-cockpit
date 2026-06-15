@@ -1,179 +1,129 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" id="akamaru-avatar">
-  <defs>
-    <radialGradient id="spaceGradient" cx="50%" cy="50%" r="80%">
-      <stop offset="0%" stop-color="#C2185B" />
-      <stop offset="20%" stop-color="#B71C1C" />
-      <stop offset="50%" stop-color="#4a0010" />
-      <stop offset="100%" stop-color="#050000" />
-    </radialGradient>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="100%" height="100%">
+ <defs>
+ <radialGradient id="spaceBg" cx="50%" cy="50%" r="70%">
+ <stop offset="0%" stop-color="#C2185B" />
+ <stop offset="60%" stop-color="#880E4F" />
+ <stop offset="100%" stop-color="#1A0000" />
+ </radialGradient>
 
-    <linearGradient id="furBody" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#E64A19" />
-      <stop offset="40%" stop-color="#D84315" />
-      <stop offset="100%" stop-color="#8B0000" />
-    </linearGradient>
-    <linearGradient id="earInner" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#FFF8F0" />
-      <stop offset="100%" stop-color="#FFE4E1" />
-    </linearGradient>
-    <linearGradient id="helmetGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6a0000" />
-      <stop offset="50%" stop-color="#B71C1C" />
-      <stop offset="100%" stop-color="#2d0000" />
-    </linearGradient>
-    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#00FFFF" />
-      <stop offset="60%" stop-color="#00CED1" />
-      <stop offset="100%" stop-color="#00FFFF" stop-opacity="0" />
-    </radialGradient>
+ <linearGradient id="helmetGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+ <stop offset="0%" stop-color="#FF5252" />
+ <stop offset="100%" stop-color="#B71C1C" />
+ </linearGradient>
 
-    <filter id="bloom" x="-200%" y="-200%" width="500%" height="500%">
-      <feGaussianBlur stdDeviation="24" result="blur1" />
-      <feGaussianBlur stdDeviation="10" result="blur2" />
-      <feMerge>
-        <feMergeNode in="blur1" />
-        <feMergeNode in="blur2" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="5" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-  </defs>
+ <linearGradient id="earOuter" x1="0%" y1="0%" x2="0%" y2="100%">
+ <stop offset="0%" stop-color="#FF6347" />
+ <stop offset="100%" stop-color="#CC3300" />
+ </linearGradient>
 
-  <style>
-    .avatar-group { animation: breathe 4s ease-in-out infinite; transform-origin: 250px 320px; }
-    .chest { animation: breatheChest 4s ease-in-out infinite; transform-origin: 250px 420px; }
-    .ear-left { animation: earTwitchLeft 9s ease-in-out infinite; transform-origin: 135px 225px; }
-    .ear-right { animation: earTwitchRight 7s ease-in-out infinite; transform-origin: 365px 225px; }
-    .antenna-stem { animation: antennaWobble 3s ease-in-out infinite; transform-origin: 250px 135px; }
-    .antenna-ball { animation: antennaGlow 2s ease-in-out infinite alternate; }
-    .eye-glow { animation: eyePulse 2.5s ease-in-out infinite alternate; }
-    .tail { animation: tailWag 5s ease-in-out infinite; transform-origin: 380px 410px; }
-    .stars-a { animation: twinkleA 2.5s ease-in-out infinite alternate; }
-    .stars-b { animation: twinkleB 3.5s ease-in-out infinite alternate; }
-    .stars-c { animation: twinkleC 4.5s ease-in-out infinite alternate; }
-    .nebula { animation: nebulaShift 25s ease-in-out infinite alternate; }
+ <filter id="cyanGlow" x="-50%" y="-50%" width="200%" height="200%">
+ <feGaussianBlur stdDeviation="8" result="blur" />
+ <feMerge>
+ <feMergeNode in="blur" />
+ <feMergeNode in="blur" />
+ <feMergeNode in="SourceGraphic" />
+ </feMerge>
+ </filter>
+ </defs>
 
-    @keyframes breathe { 0%, 100% { transform: scaleY(1) translateY(0); } 50% { transform: scaleY(1.01) translateY(-1px); } }
-    @keyframes breatheChest { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(1.02); } }
-    @keyframes earTwitchLeft { 0%, 92%, 100% { transform: rotate(0deg); } 96% { transform: rotate(-3deg); } }
-    @keyframes earTwitchRight { 0%, 88%, 100% { transform: rotate(0deg); } 92% { transform: rotate(3deg); } }
-    @keyframes antennaWobble { 0%, 100% { transform: rotate(0deg); } 33% { transform: rotate(4deg); } 66% { transform: rotate(-3deg); } }
-    @keyframes antennaGlow { 0% { opacity: 0.75; } 100% { opacity: 1; } }
-    @keyframes eyePulse { 0% { opacity: 0.65; } 100% { opacity: 1; } }
-    @keyframes tailWag { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(6deg); } }
-    @keyframes twinkleA { 0% { opacity: 0.3; } 100% { opacity: 1; } }
-    @keyframes twinkleB { 0% { opacity: 0.2; } 100% { opacity: 0.9; } }
-    @keyframes twinkleC { 0% { opacity: 0.4; } 100% { opacity: 1; } }
-    @keyframes nebulaShift { 0% { transform: translate(0,0); } 100% { transform: translate(-8px,-4px); } }
-  </style>
+ <style>
+ /* Animationen */
+ .cyber-eye {
+ transform-origin: center;
+ animation: pulse 3s infinite alternate;
+ }
+ .antenna {
+ transform-origin: 300px 170px;
+ animation: sway 4s infinite ease-in-out;
+ }
+ .star {
+ animation: twinkle 5s infinite alternate;
+ }
+ .star-fast {
+ animation: twinkle 2s infinite alternate;
+ }
+ .breathing {
+ transform-origin: 300px 600px;
+ animation: breathe 6s infinite ease-in-out;
+ }
 
-  <rect width="500" height="500" fill="url(#spaceGradient)" />
+ @keyframes pulse {
+ 0% { opacity: 0.7; filter: drop-shadow(0 0 10px #00FFFF); }
+ 100% { opacity: 1; filter: drop-shadow(0 0 25px #00FFFF); }
+ }
+ @keyframes sway {
+ 0%, 100% { transform: rotate(-3deg); }
+ 50% { transform: rotate(5deg); }
+ }
+ @keyframes twinkle {
+ 0% { opacity: 0.2; transform: scale(0.8); }
+ 100% { opacity: 1; transform: scale(1.2); }
+ }
+ @keyframes breathe {
+ 0%, 100% { transform: scaleY(1); }
+ 50% { transform: scaleY(1.02); }
+ }
+ </style>
 
-  <g class="nebula" opacity="0.55">
-    <ellipse cx="140" cy="90" rx="160" ry="110" fill="#7a0015" opacity="0.3" filter="url(#softGlow)" />
-    <ellipse cx="360" cy="430" rx="180" ry="130" fill="#3a000a" opacity="0.25" filter="url(#softGlow)" />
-    <ellipse cx="430" cy="120" rx="130" ry="90" fill="#9e1034" opacity="0.2" filter="url(#softGlow)" />
-    <ellipse cx="70" cy="390" rx="150" ry="100" fill="#5a0012" opacity="0.25" filter="url(#softGlow)" />
-  </g>
+ <rect width="600" height="600" fill="url(#spaceBg)" />
 
-  <g class="stars-a" fill="#FFF">
-    <circle cx="40" cy="60" r="1.2" opacity="0.7" />
-    <circle cx="105" cy="30" r="0.8" opacity="0.5" />
-    <circle cx="415" cy="55" r="1.6" opacity="0.9" />
-    <circle cx="465" cy="140" r="0.9" opacity="0.6" />
-    <circle cx="80" cy="180" r="1.1" opacity="0.8" />
-    <circle cx="445" cy="250" r="0.7" opacity="0.5" />
-    <circle cx="50" cy="320" r="1.3" opacity="0.9" />
-    <circle cx="455" cy="385" r="1.0" opacity="0.7" />
-    <circle cx="100" cy="435" r="0.8" opacity="0.5" />
-    <circle cx="395" cy="460" r="1.2" opacity="0.8" />
-    <circle cx="240" cy="15" r="0.9" opacity="0.6" />
-  </g>
-  <g class="stars-b" fill="#FFE4E1">
-    <circle cx="220" cy="25" r="0.9" opacity="0.6" />
-    <circle cx="335" cy="110" r="1.0" opacity="0.7" />
-    <circle cx="30" cy="240" r="0.8" opacity="0.5" />
-    <circle cx="485" cy="35" r="1.0" opacity="0.8" />
-    <circle cx="265" cy="480" r="0.9" opacity="0.6" />
-    <circle cx="160" cy="145" r="0.6" opacity="0.5" />
-    <circle cx="365" cy="195" r="0.7" opacity="0.6" />
-    <circle cx="190" cy="405" r="0.8" opacity="0.7" />
-    <circle cx="440" cy="320" r="0.5" opacity="0.5" />
-  </g>
-  <g class="stars-c" fill="#FFF">
-    <circle cx="305" cy="55" r="1.1" opacity="0.8" />
-    <circle cx="75" cy="85" r="0.9" opacity="0.7" />
-    <circle cx="435" cy="295" r="1.0" opacity="0.8" />
-    <circle cx="125" cy="345" r="0.7" opacity="0.5" />
-    <circle cx="325" cy="425" r="1.2" opacity="0.9" />
-    <circle cx="280" cy="240" r="0.6" opacity="0.6" />
-    <circle cx="145" cy="380" r="0.8" opacity="0.7" />
-  </g>
+ <g fill="#FFFFFF" opacity="0.8">
+ <circle cx="100" cy="150" r="1.5" class="star" />
+ <circle cx="50" cy="300" r="2.5" class="star-fast" fill="#FFC0CB"/>
+ <circle cx="120" cy="450" r="1" />
+ <circle cx="200" cy="80" r="2" class="star" />
+ <circle cx="450" cy="120" r="1.5" class="star-fast" />
+ <circle cx="520" cy="280" r="2" />
+ <circle cx="480" cy="480" r="2.5" class="star" fill="#FFC0CB"/>
+ <circle cx="550" cy="180" r="1" />
+ <circle cx="80" cy="520" r="2" class="star-fast" />
+ </g>
 
-  <g class="tail">
-    <path d="M 370 410 C 400 390, 420 340, 430 300 C 435 285, 445 290, 450 305 C 455 320, 440 360, 425 400 C 420 415, 410 430, 405 455" 
-          fill="url(#furBody)" stroke="#3E2723" stroke-width="3" stroke-linejoin="round" />
-    <path d="M 425 330 Q 432 345 425 360 M 415 370 Q 422 385 415 400" 
-          fill="none" stroke="#5a0012" stroke-width="3" stroke-linecap="round" />
-  </g>
+ <g class="breathing">
 
-  <g class="avatar-group">
-    <path class="ear-left" d="M 135 225 C 110 245, 105 300, 120 360 C 130 395, 165 385, 175 340 C 185 295, 175 250, 160 225 Z" 
-          fill="url(#furBody)" stroke="#3E2723" stroke-width="3" />
-    <path d="M 140 240 C 125 260, 125 305, 135 345 C 145 365, 160 355, 165 325" 
-          fill="url(#earInner)" opacity="0.95" />
-    
-    <path class="ear-right" d="M 365 225 C 390 245, 395 300, 380 360 C 370 395, 335 385, 325 340 C 315 295, 325 250, 340 225 Z" 
-          fill="url(#furBody)" stroke="#3E2723" stroke-width="3" />
-    <path d="M 360 240 C 375 260, 375 305, 365 345 C 355 365, 340 355, 335 325" 
-          fill="url(#earInner)" opacity="0.95" />
+ <path d="M 450 550 Q 520 450 480 350 Q 540 450 490 550 Z" fill="url(#earOuter)" stroke="#8B0000" stroke-width="4" stroke-linejoin="round"/>
+ <path d="M 473 390 Q 500 395 510 385" fill="none" stroke="#8B0000" stroke-width="4"/>
+ <path d="M 465 440 Q 500 445 515 435" fill="none" stroke="#8B0000" stroke-width="4"/>
+ <path d="M 460 490 Q 500 495 515 480" fill="none" stroke="#8B0000" stroke-width="4"/>
 
-    <path d="M 175 225 C 175 160, 210 125, 250 125 C 290 125, 325 160, 325 225 L 325 235 L 175 235 Z" 
-          fill="url(#helmetGradient)" stroke="#3E2723" stroke-width="3" />
-    <path d="M 175 225 L 325 225" fill="none" stroke="#3E2723" stroke-width="3" />
-    <path d="M 180 210 C 215 195, 285 195, 320 210" fill="none" stroke="#E64A19" stroke-width="2" opacity="0.5" />
-    <path d="M 310 190 L 335 165 L 325 205 Z" fill="#D84315" stroke="#3E2723" stroke-width="2" />
+ <path d="M 200 430 L 200 600 L 400 600 L 400 430 Z" fill="#FF8A65" />
+ <path d="M 220 440 L 220 600 L 380 600 L 380 440 Q 300 420 220 440 Z" fill="#FDF5E6" />
 
-    <g class="antenna-stem">
-      <path d="M 250 140 Q 260 115, 280 100" fill="none" stroke="#3E2723" stroke-width="4" stroke-linecap="round" />
-      <circle class="antenna-ball" cx="280" cy="95" r="14" fill="#00FFFF" filter="url(#bloom)" />
-    </g>
+ <path d="M 210 240 C 130 240, 140 480, 180 500 C 220 520, 230 350, 210 240 Z" fill="url(#earOuter)" stroke="#8B0000" stroke-width="3"/>
+ <path d="M 200 260 C 150 260, 160 460, 180 480 C 200 500, 215 350, 200 260 Z" fill="#FDF5E6" />
 
-    <path d="M 175 235 C 160 240, 155 280, 165 320 C 175 360, 205 380, 250 380 C 295 380, 325 360, 335 320 C 345 280, 340 240, 325 235 Z" 
-          fill="#FDF5E6" stroke="#3E2723" stroke-width="3" />
-    
-    <path d="M 185 340 C 205 365, 230 370, 250 370 C 270 370, 295 365, 315 340" 
-          fill="#D84315" opacity="0.08" />
+ <path d="M 390 240 C 470 240, 460 480, 420 500 C 380 520, 370 350, 390 240 Z" fill="url(#earOuter)" stroke="#8B0000" stroke-width="3"/>
+ <path d="M 400 260 C 450 260, 440 460, 420 480 C 400 500, 385 350, 400 260 Z" fill="#FDF5E6" />
 
-    <g stroke="#3E2723" stroke-width="3" fill="none" stroke-linecap="round">
-      <path d="M 195 255 Q 220 262 245 255" />
-      <path d="M 255 255 Q 280 262 305 255" />
-    </g>
+ <path d="M 200 240 C 180 380, 200 460, 300 460 C 400 460, 420 380, 400 240 Z" fill="#FDF5E6" stroke="#4E342E" stroke-width="3"/>
 
-    <path d="M 215 330 Q 250 315 285 330 Q 250 360 215 330" fill="#3E2723" />
-    <path d="M 205 348 Q 250 358 295 348" fill="none" stroke="#3E2723" stroke-width="5" stroke-linecap="round" />
-    
-    <path d="M 238 368 L 248 395 L 252 380 L 256 395 L 262 368" 
-          fill="#FDF5E6" stroke="#3E2723" stroke-width="2.5" stroke-linejoin="round" />
+ <path d="M 270 455 L 285 485 L 300 465 L 315 485 L 330 455 Z" fill="#FDF5E6" stroke="#4E342E" stroke-width="3" stroke-linejoin="round"/>
 
-    <g class="chest">
-      <path d="M 175 380 C 150 385, 135 420, 130 500 L 370 500 C 365 420, 350 385, 325 380 C 300 375, 280 390, 250 390 C 220 390, 200 375, 175 380 Z" 
-            fill="url(#furBody)" stroke="#3E2723" stroke-width="3" />
-      <path d="M 210 390 L 222 415 L 234 395 L 246 420 L 258 395 L 270 415 L 282 390" 
-            fill="#FDF5E6" stroke="#3E2723" stroke-width="2.5" stroke-linejoin="round" />
-    </g>
+ <path d="M 195 240 C 195 100, 405 100, 405 240 Z" fill="url(#helmetGrad)" stroke="#4E342E" stroke-width="4"/>
+ <line x1="195" y1="240" x2="405" y2="240" stroke="#4E342E" stroke-width="6" stroke-linecap="round"/>
+ <path d="M 390 190 L 430 170 L 400 210 Z" fill="#FF5252" stroke="#4E342E" stroke-width="3" stroke-linejoin="round"/>
 
-    <g class="eye-glow">
-      <circle cx="205" cy="185" r="20" fill="#0a0000" />
-      <circle cx="205" cy="185" r="20" fill="url(#eyeGlow)" opacity="0.85" filter="url(#bloom)" />
-      <circle cx="295" cy="185" r="20" fill="#0a0000" />
-      <circle cx="295" cy="185" r="20" fill="url(#eyeGlow)" opacity="0.85" filter="url(#bloom)" />
-    </g>
-  </g>
+ <g class="antenna">
+ <path d="M 300 135 C 300 90, 320 80, 320 60" fill="none" stroke="#FF5252" stroke-width="6" stroke-linecap="round"/>
+ <circle cx="320" cy="60" r="12" fill="#FF5252" stroke="#4E342E" stroke-width="2"/>
+ </g>
+
+ <path d="M 220 300 Q 250 310 270 300" fill="none" stroke="#212121" stroke-width="4" stroke-linecap="round"/>
+ <path d="M 330 300 Q 350 310 380 300" fill="none" stroke="#212121" stroke-width="4" stroke-linecap="round"/>
+
+ <path d="M 280 340 L 320 340 L 300 360 Z" fill="#3E2723" stroke="#3E2723" stroke-width="4" stroke-linejoin="round"/>
+ <path d="M 290 342 L 310 342" stroke="#6D4C41" stroke-width="3" stroke-linecap="round"/> <path d="M 230 420 Q 300 395 370 420" fill="none" stroke="#3E2723" stroke-width="14" stroke-linecap="round"/>
+ <path d="M 235 420 Q 300 400 365 420" fill="none" stroke="#1A0000" stroke-width="4" stroke-linecap="round"/>
+
+ <g transform="translate(255, 190)">
+ <circle cx="0" cy="0" r="22" fill="#00FFFF" filter="url(#cyanGlow)" class="cyber-eye"/>
+ <circle cx="0" cy="0" r="22" fill="none" stroke="#1A0000" stroke-width="5"/>
+ </g>
+
+ <g transform="translate(345, 190)">
+ <circle cx="0" cy="0" r="22" fill="#00FFFF" filter="url(#cyanGlow)" class="cyber-eye"/>
+ <circle cx="0" cy="0" r="22" fill="none" stroke="#1A0000" stroke-width="5"/>
+ </g>
+
+ </g>
 </svg>
