@@ -210,6 +210,67 @@ async function updateBitcoinData() {
 updateBitcoinData();
 setInterval(updateBitcoinData, 60000);
 
+let realLifeData = {
+  weather: { temp: 0, humidity: 0, wind: 0, condition: 'Unknown', isDay: true },
+  moon: { age: 0, name: 'Unknown' },
+  updatedAt: null
+};
+
+const WMO_CODES = {
+  0: 'Klar', 1: 'Meist klar', 2: 'Teils bewölkt', 3: 'Bedeckt',
+  45: 'Nebel', 48: 'Reifnebel', 51: 'Nieselregen', 53: 'Nieselregen', 55: 'Nieselregen',
+  61: 'Regen', 63: 'Regen', 65: 'Regen', 71: 'Schneefall', 73: 'Schneefall', 75: 'Schneefall',
+  77: 'Schneegriesel', 80: 'Regenschauer', 81: 'Regenschauer', 82: 'Regenschauer',
+  85: 'Schneeschauer', 86: 'Schneeschauer', 95: 'Gewitter', 96: 'Gewitter', 99: 'Gewitter'
+};
+
+function getMoonPhase(date = new Date()) {
+  const synodic = 29.53059;
+  const ref = new Date('2000-01-06T18:14:00Z');
+  const diff = (date - ref) / 1000 / 3600 / 24;
+  const age = ((diff % synodic) + synodic) % synodic;
+  const phase = age / synodic;
+  let name = 'Unknown';
+  if (phase < 0.02 || phase > 0.98) name = 'Neumond';
+  else if (phase < 0.23) name = 'Zunehmende Sichel';
+  else if (phase < 0.27) name = 'Erstes Viertel';
+  else if (phase < 0.48) name = 'Zunehmender Mond';
+  else if (phase < 0.52) name = 'Vollmond';
+  else if (phase < 0.73) name = 'Abnehmender Mond';
+  else if (phase < 0.77) name = 'Letztes Viertel';
+  else name = 'Abnehmende Sichel';
+  return { age: Math.round(age), phase, name };
+}
+
+async function updateRealLifeData() {
+  try {
+    const url = 'https://api.open-meteo.com/v1/forecast?latitude=51.7191&longitude=8.7574&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m,is_day&timezone=Europe/Berlin';
+    const data = await fetchJson(url, null);
+    const current = data?.current;
+    if (current) {
+      realLifeData = {
+        weather: {
+          temp: current.temperature_2m,
+          humidity: current.relative_humidity_2m,
+          wind: current.wind_speed_10m,
+          condition: WMO_CODES[current.weather_code] || `Code ${current.weather_code}`,
+          isDay: current.is_day === 1
+        },
+        moon: getMoonPhase(),
+        updatedAt: new Date().toISOString()
+      };
+    } else {
+      realLifeData.moon = getMoonPhase();
+    }
+  } catch (e) {
+    realLifeData.moon = getMoonPhase();
+    console.error('Real life data update failed:', e.message);
+  }
+}
+
+updateRealLifeData();
+setInterval(updateRealLifeData, 300000);
+
 async function broadcast() {
   const payload = {
     type: 'tick',
@@ -220,7 +281,8 @@ async function broadcast() {
     websites: await getWebsites(),
     openclaw: await getOpenClawInfo(),
     log: await getLogLine(),
-    bitcoin: bitcoinData
+    bitcoin: bitcoinData,
+    reallife: realLifeData
   };
 
   const data = `data: ${JSON.stringify(payload)}\n\n`;

@@ -1,6 +1,6 @@
 /**
- * OpenClaw Cockpit Frontend v0.2.6
- * Streams live system metrics, service status, chat, logs and bitcoin data to the dashboard.
+ * OpenClaw Cockpit Frontend v0.2.8
+ * Streams live system metrics, service status, chat, logs, bitcoin and real-life data to the dashboard.
  */
 
 const avatar = document.getElementById('avatar');
@@ -197,6 +197,22 @@ function updateWebsites(sites) {
   }).join('');
 }
 
+function updateRealLife(rl) {
+  if (!rl) return;
+  const w = rl.weather || {};
+  const m = rl.moon || {};
+  const tempEl = document.getElementById('rl-temp');
+  const humEl = document.getElementById('rl-humidity');
+  const windEl = document.getElementById('rl-wind');
+  const condEl = document.getElementById('rl-condition');
+  const moonEl = document.getElementById('rl-moon');
+  if (tempEl) tempEl.textContent = (w.temp !== undefined ? `${w.temp}°C` : '--°C');
+  if (humEl) humEl.textContent = (w.humidity !== undefined ? `${w.humidity}%` : '--%');
+  if (windEl) windEl.textContent = (w.wind !== undefined ? `${w.wind} km/h` : '-- km/h');
+  if (condEl) condEl.textContent = (w.condition || '--');
+  if (moonEl) moonEl.textContent = (m.name || '--');
+}
+
 function updateOpenClaw(info) {
   document.getElementById('oc-model').textContent = info.model;
   document.getElementById('oc-session').textContent = info.session;
@@ -247,6 +263,7 @@ function connect() {
         if (data.websites) updateWebsites(data.websites);
         if (data.openclaw) updateOpenClaw(data.openclaw);
         if (data.bitcoin) updateBitcoin(data.bitcoin);
+        if (data.reallife) updateRealLife(data.reallife);
         if (data.log) addLogLine(data.log, 'SYS');
 
         const remoteState = data.state;
