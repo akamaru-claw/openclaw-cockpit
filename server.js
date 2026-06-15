@@ -119,6 +119,31 @@ async function getServices() {
   return results;
 }
 
+async function getWebsites() {
+  const sites = [
+    { name: 'einhornkönig.de', url: 'https://einhornkönig.de' },
+    { name: 'krankenbuch.de', url: 'https://krankenbuch.de' },
+    { name: 'mauri-tools.de', url: 'https://mauri-tools.de' },
+    { name: 'op-return.de', url: 'https://op-return.de' },
+    { name: 'einhorn.live', url: 'https://einhorn.live' }
+  ];
+
+  const results = [];
+  for (const site of sites) {
+    const start = Date.now();
+    try {
+      const out = await run(`curl -sL -o /dev/null -w "%{http_code}|%{time_total}" --max-time 12 "${site.url}"`);
+      const [code, time] = out.split('|');
+      const ms = Math.round(parseFloat(time) * 1000);
+      const status = (code === '200' || code === '301' || code === '302' || code === '401' || code === '403') ? 'up' : 'down';
+      results.push({ ...site, status, code, ms });
+    } catch (e) {
+      results.push({ ...site, status: 'down', code: 'ERR', ms: 0 });
+    }
+  }
+  return results;
+}
+
 async function getOpenClawInfo() {
   const model = await run("ps aux | grep -oP 'openclaw.*--model\s+\K[^ ]+' | head -1");
   const status = await run("systemctl --user is-active openclaw 2>/dev/null || echo 'running'");
@@ -192,6 +217,7 @@ async function broadcast() {
     state: readState(),
     metrics: await getMetrics(),
     services: await getServices(),
+    websites: await getWebsites(),
     openclaw: await getOpenClawInfo(),
     log: await getLogLine(),
     bitcoin: bitcoinData

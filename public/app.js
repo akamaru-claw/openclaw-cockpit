@@ -187,6 +187,16 @@ function updateServices(services) {
   }).join('');
 }
 
+function updateWebsites(sites) {
+  const list = document.getElementById('websites');
+  if (!list) return;
+  list.innerHTML = sites.map(s => {
+    const dotClass = s.status === 'up' ? 'up' : 'down';
+    const latency = s.ms ? `${s.ms}ms` : '';
+    return `<li><span><span class="status-dot ${dotClass}"></span>${s.name}</span><span>${latency} ${s.status.toUpperCase()}</span></li>`;
+  }).join('');
+}
+
 function updateOpenClaw(info) {
   document.getElementById('oc-model').textContent = info.model;
   document.getElementById('oc-session').textContent = info.session;
@@ -234,6 +244,7 @@ function connect() {
       if (data.type === 'tick') {
         if (data.metrics) updateMetrics(data.metrics);
         if (data.services) updateServices(data.services);
+        if (data.websites) updateWebsites(data.websites);
         if (data.openclaw) updateOpenClaw(data.openclaw);
         if (data.bitcoin) updateBitcoin(data.bitcoin);
         if (data.log) addLogLine(data.log, 'SYS');

@@ -197,7 +197,8 @@ body {
 
 .metrics-panel { grid-column: 2; grid-row: 1; }
 .services-panel { grid-column: 3; grid-row: 1; }
-.openclaw-panel { grid-column: 2 / span 2; grid-row: 2; }
+.openclaw-panel { grid-column: 2; grid-row: 2; }
+.websites-panel { grid-column: 3; grid-row: 2; }
 .chat-panel { grid-column: 1; grid-row: 2; }
 .log-panel { grid-column: 1 / span 3; grid-row: 3; }
 
@@ -334,7 +335,7 @@ body {
 
 @media (max-width: 1000px) {
   .dashboard { grid-template-columns: 1fr; grid-template-rows: auto; overflow-y: auto; }
-  .avatar-panel, .metrics-panel, .services-panel, .openclaw-panel, .chat-panel, .log-panel {
+  .avatar-panel, .metrics-panel, .services-panel, .openclaw-panel, .websites-panel, .chat-panel, .log-panel {
     grid-column: 1; grid-row: auto;
   }
 }
